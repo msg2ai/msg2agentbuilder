@@ -1,0 +1,40 @@
+services:
+  app-virtual-display:
+    build:
+      context: .
+      dockerfile: Dockerfile.virtual-display
+      args:
+        - NEXT_PUBLIC_WORKFLOW_ID=${NEXT_PUBLIC_WORKFLOW_ID}
+        - NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=${NEXT_PUBLIC_CHATKIT_DOMAIN_KEY}
+        - OPENAI_API_KEY=${OPENAI_API_KEY}
+    ports:
+      - "3003:3000"  # App port (using 3003 to avoid conflict with main worktree)
+      - "5900:5900"  # VNC port - view virtual display remotely
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    environment:
+      - DISPLAY=:99
+      - VIRTUAL_DISPLAY=true
+      - BROWSER_VISIBLE=true
+      - LOCAL_TESTING=true
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - NEXT_PUBLIC_WORKFLOW_ID=${NEXT_PUBLIC_WORKFLOW_ID}
+      - NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=${NEXT_PUBLIC_CHATKIT_DOMAIN_KEY}
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_API_KEY_SID=${TWILIO_API_KEY_SID}
+      - TWILIO_API_KEY_SECRET=${TWILIO_API_KEY_SECRET}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
+      - APP_URL=${APP_URL:-http://localhost:3000}
+    volumes:
+      - .:/app  # Mount source code for dev mode
+      - /app/node_modules  # Preserve node_modules from image
+      # Removed .next volume mount to allow hot reloading in dev mode
+    restart: unless-stopped
+    # Add memory limits to prevent issues
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G

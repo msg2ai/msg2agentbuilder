@@ -1,0 +1,79 @@
+FROM node:20-slim
+
+# Install Xvfb and dependencies for virtual display
+RUN apt-get update && apt-get install -y \
+    xvfb \
+    x11vnc \
+    fluxbox \
+    wget \
+    wmctrl \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Chromium for Puppeteer (works on both AMD64 and ARM64)
+RUN apt-get update && apt-get install -y \
+    chromium \
+    chromium-driver \
+    fonts-ipafont-gothic \
+    fonts-wqy-zenhei \
+    fonts-thai-tlwg \
+    fonts-kacst \
+    fonts-freefont-ttf \
+    libxss1 \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set up working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy application code
+COPY . .
+
+# Copy test files back to root if they were moved
+RUN if [ -d "tests" ]; then cp -r tests/* . 2>/dev/null || true; fi
+
+# Accept build arguments ONLY for Next.js PUBLIC variables (safe to bake into image)
+ARG NEXT_PUBLIC_WORKFLOW_ID
+ARG NEXT_PUBLIC_CHATKIT_DOMAIN_KEY
+
+# Make them available during build (these are PUBLIC and safe in the image)
+ENV NEXT_PUBLIC_WORKFLOW_ID=$NEXT_PUBLIC_WORKFLOW_ID
+ENV NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=$NEXT_PUBLIC_CHATKIT_DOMAIN_KEY
+
+# Build the Next.js application (skip if build fails, we can use dev mode)
+# Note: OPENAI_API_KEY should be provided at RUNTIME via environment variables
+RUN npm run build || echo "Build failed, will use dev mode"
+
+# Create non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser -m appuser
+
+# Create necessary directories and set permissions
+RUN mkdir -p /tmp/.X11-unix /home/appuser/.fluxbox && \
+    chmod 1777 /tmp/.X11-unix && \
+    chmod 755 /home/appuser/.fluxbox && \
+    chown -R appuser:appuser /app /tmp/.X11-unix /home/appuser
+
+# Set up virtual display environment variables
+ENV DISPLAY=:99
+ENV PUPPETEER_HEADLESS=false
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+
+# Copy and set up startup script (to /usr/local/bin to avoid volume mount conflicts)
+COPY scripts/start-with-display.sh /usr/local/bin/start-with-display.sh
+RUN chmod +x /usr/local/bin/start-with-display.sh
+
+# Switch to non-root user
+USER appuser
+
+EXPOSE 3000
+# Optional VNC port for remote viewing: EXPOSE 5900
+
+CMD ["/bin/bash", "/usr/local/bin/start-with-display.sh"]

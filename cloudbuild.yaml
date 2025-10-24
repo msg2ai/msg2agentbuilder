@@ -1,0 +1,73 @@
+steps:
+  # Build the container image with build args
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_WORKFLOW_ID=${_NEXT_PUBLIC_WORKFLOW_ID}'
+      - '--build-arg'
+      - 'NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=${_NEXT_PUBLIC_CHATKIT_DOMAIN_KEY}'
+      - '-t'
+      - 'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:$BUILD_ID'
+      - '-t'
+      - 'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:latest'
+      - '.'
+    timeout: 900s
+
+  # Push the container image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:$BUILD_ID'
+
+  # Deploy container image to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - '${_SERVICE_NAME}'
+      - '--image'
+      - 'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:$BUILD_ID'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--min-instances'
+      - '0'
+      - '--max-instances'
+      - '10'
+      - '--memory'
+      - '2Gi'
+      - '--cpu'
+      - '1'
+      - '--port'
+      - '8080'
+      - '--timeout'
+      - '300'
+      - '--set-env-vars'
+      - 'NODE_ENV=production,OPENAI_API_KEY=${_OPENAI_API_KEY},NEXT_PUBLIC_WORKFLOW_ID=${_NEXT_PUBLIC_WORKFLOW_ID},NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=${_NEXT_PUBLIC_CHATKIT_DOMAIN_KEY},TWILIO_ACCOUNT_SID=${_TWILIO_ACCOUNT_SID},TWILIO_API_KEY_SID=${_TWILIO_API_KEY_SID},TWILIO_API_KEY_SECRET=${_TWILIO_API_KEY_SECRET},TWILIO_PHONE_NUMBER=${_TWILIO_PHONE_NUMBER}'
+
+substitutions:
+  _SERVICE_NAME: 'msg2agentbuilder'
+  _REGION: 'us-central1'
+  # REQUIRED: Pass these values via --substitutions flag when building
+  # Example: gcloud builds submit --substitutions=_NEXT_PUBLIC_WORKFLOW_ID=wf_xxx,...
+  _NEXT_PUBLIC_WORKFLOW_ID: ''  # Required: Your ChatKit workflow ID (starts with wf_)
+  _NEXT_PUBLIC_CHATKIT_DOMAIN_KEY: ''  # Required: Your ChatKit domain key (starts with domain_pk_)
+  _OPENAI_API_KEY: ''  # Required: Your OpenAI API key
+  _TWILIO_ACCOUNT_SID: ''  # Required: Your Twilio Account SID
+  _TWILIO_API_KEY_SID: ''  # Required: Your Twilio API Key SID
+  _TWILIO_API_KEY_SECRET: ''  # Required: Your Twilio API Key Secret
+  _TWILIO_PHONE_NUMBER: ''  # Required: Your Twilio phone number in E.164 format
+
+images:
+  - 'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:$BUILD_ID'
+  - 'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:latest'
+
+options:
+  machineType: 'E2_HIGHCPU_8'
+  logging: CLOUD_LOGGING_ONLY
+
+timeout: 1800s
