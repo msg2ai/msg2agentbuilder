@@ -1,0 +1,50 @@
+{
+  "name": "msg2agentbuilder",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "unset OPENAI_API_KEY && next dev",
+    "dev:virtual-display": "./scripts/run-with-virtual-display.sh",
+    "build": "next build",
+    "start": "next start",
+    "test:virtual-display": "node test-virtual-display.js",
+    "docker:virtual-display": "docker-compose -f docker-compose.virtual-display.yml up --build",
+    "docker:virtual-display:down": "docker-compose -f docker-compose.virtual-display.yml down",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,css,md}\""
+  },
+  "dependencies": {
+    "@openai/chatkit": "^1.0.0",
+    "@openai/chatkit-react": ">=1.1.1 <2.0.0",
+    "next": "^15.5.4",
+    "node-tesseract-ocr": "^2.2.1",
+    "openai": "^6.3.0",
+    "puppeteer": "^24.25.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "twilio": "^5.10.3"
+  },
+  "optionalDependencies": {
+    "@tailwindcss/oxide-linux-x64-gnu": "4.1.11",
+    "lightningcss-linux-x64-gnu": "1.30.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.37.0",
+    "eslint-config-next": "^15.5.4",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

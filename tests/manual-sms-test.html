@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manual SMS Test - SSE Interception</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        h1 {
+            color: #00ffff;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: monospace;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #00cc00;
+        }
+        #status, #results {
+            margin: 20px 0;
+            padding: 15px;
+            background: #2a2a2a;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff0000; }
+        .info { color: #00ffff; }
+        pre {
+            background: #000;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>📱 Manual SMS Test - SSE Interception Demo</h1>
+
+    <div id="status">
+        <p class="info">Status: <span id="statusText">Ready</span></p>
+        <p class="info">ChatKit Ready: <span id="chatkitStatus">Checking...</span></p>
+        <p class="info">Workflow ID: <span id="workflowId">Loading...</span></p>
+    </div>
+
+    <h2>Test Steps:</h2>
+    <ol>
+        <li>Make sure the Next.js dev server is running at <a href="http://localhost:3002" target="_blank">http://localhost:3002</a></li>
+        <li>Open that page in another tab and verify ChatKit loads</li>
+        <li>Come back here and click "Send Test SMS"</li>
+        <li>Watch the console logs (F12) for SSE interception messages</li>
+        <li>Wait ~10 seconds for the AI response</li>
+        <li>Click "Check Results" to see the captured response</li>
+    </ol>
+
+    <div>
+        <button onclick="sendTestSMS()">📨 Send Test SMS</button>
+        <button onclick="checkResults()">📊 Check Results</button>
+        <button onclick="clearResults()">🗑️ Clear Results</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        // Check if ChatKit is ready
+        async function checkChatKitStatus() {
+            try {
+                const response = await fetch('http://localhost:3002');
+                if (response.ok) {
+                    document.getElementById('statusText').textContent = 'Server Running';
+                    document.getElementById('statusText').className = 'success';
+
+                    // Try to get workflow ID from the page
+                    // (This won't work due to CORS, but worth trying)
+                    setTimeout(checkWorkflowId, 1000);
+                }
+            } catch (error) {
+                document.getElementById('statusText').textContent = 'Server Not Running';
+                document.getElementById('statusText').className = 'error';
+            }
+        }
+
+        function checkWorkflowId() {
+            // Note: This won't work due to CORS, user needs to check manually
+            document.getElementById('workflowId').textContent = 'Check in main tab';
+            document.getElementById('chatkitStatus').textContent = 'Check in main tab';
+        }
+
+        async function sendTestSMS() {
+            const testMessage = 'What is the capital of France?';
+            const fromNumber = '+15555551234';
+
+            log('<span class="info">Sending test SMS...</span>');
+            log(`From: ${fromNumber}`);
+            log(`Message: "${testMessage}"`);
+
+            try {
+                // We'll use the incoming-sms event listener approach
+                // But since this is a separate page, we need to use the API directly
+
+                // Option 1: Try posting to the SMS webhook endpoint
+                const response = await fetch('http://localhost:3002/api/sms-webhook', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        From: fromNumber,
+                        Body: testMessage,
+                    }),
+                });
+
+                if (response.ok) {
+                    const result = await response.text();
+                    log('<span class="success">✅ SMS sent successfully!</span>');
+                    log(`Response: ${result}`);
+                    log('<span class="info">⏳ Waiting 10 seconds for AI response...</span>');
+
+                    // Auto-check results after 10 seconds
+                    setTimeout(checkResults, 10000);
+                } else {
+                    log(`<span class="error">❌ Error: ${response.status} ${response.statusText}</span>`);
+                    const errorText = await response.text();
+                    log(`Details: ${errorText}`);
+                }
+            } catch (error) {
+                log(`<span class="error">❌ Error sending SMS: ${error.message}</span>`);
+            }
+        }
+
+        async function checkResults() {
+            log('<span class="info">Checking for captured response...</span>');
+
+            try {
+                // Try to fetch from a test endpoint
+                // Since we can't access window.__chatkitLastResponse from another page,
+                // we need to create an API endpoint that returns it
+
+                log('<span class="info">💡 Manual check required:</span>');
+                log('1. Open the console on http://localhost:3002');
+                log('2. Type: window.__chatkitLastResponse');
+                log('3. Press Enter to see the captured response');
+                log('');
+                log('You should also see console logs like:');
+                log('  [SSE Intercept] 📡 ChatKit conversation request detected');
+                log('  [SSE Intercept] 📝 Content chunk: ...');
+                log('');
+                log('If you see those logs, the SSE interception is working! ');
+
+            } catch (error) {
+                log(`<span class="error">❌ Error: ${error.message}</span>`);
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        function log(message) {
+            const results = document.getElementById('results');
+            const timestamp = new Date().toLocaleTimeString();
+            results.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            results.scrollTop = results.scrollHeight;
+        }
+
+        // Check status on load
+        checkChatKitStatus();
+    </script>
+</body>
+</html>
