@@ -5,20 +5,33 @@
 
 set -e
 
-# Configuration
-PROJECT_ID="eliza-447106"
-SERVICE_NAME="chatkit-app"
-REGION="us-central1"
-MIN_INSTANCES=0  # Scale to zero when no traffic (cost savings)
-MAX_INSTANCES=10
-MEMORY="2Gi"
-CPU=1
+# Load environment variables from .env.local if it exists
+if [ -f .env.local ]; then
+  echo "Loading configuration from .env.local..."
+  export $(cat .env.local | grep -v '^#' | grep -v '^$' | xargs)
+fi
+
+# Configuration (with defaults)
+PROJECT_ID="${GCP_PROJECT_ID}"
+SERVICE_NAME="${GCP_SERVICE_NAME:-chatkit-app}"
+REGION="${GCP_REGION:-us-central1}"
+MIN_INSTANCES="${GCP_MIN_INSTANCES:-0}"
+MAX_INSTANCES="${GCP_MAX_INSTANCES:-10}"
+MEMORY="${GCP_MEMORY:-2Gi}"
+CPU="${GCP_CPU:-1}"
 
 echo "Deploying to Cloud Run..."
 echo "Project: $PROJECT_ID"
 echo "Service: $SERVICE_NAME"
 echo "Region: $REGION"
 echo ""
+
+# Validate required configuration
+if [ -z "$PROJECT_ID" ]; then
+  echo "Error: GCP_PROJECT_ID not set"
+  echo "Please set it in .env.local or: export GCP_PROJECT_ID=your-project-id"
+  exit 1
+fi
 
 # Enable required APIs
 echo "Enabling required APIs..."

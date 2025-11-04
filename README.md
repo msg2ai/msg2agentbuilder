@@ -47,52 +47,52 @@ gcloud config set project YOUR_PROJECT_ID
 gcloud auth login
 ```
 
-#### Step 2: Set Environment Variables (3 minutes)
+#### Step 2: Configure Environment Variables (3 minutes)
+
+All configuration is managed through `.env.local`:
+
 ```bash
-export OPENAI_API_KEY="sk-proj-xxxxx"
-export NEXT_PUBLIC_WORKFLOW_ID="wf_xxxxx"
-export NEXT_PUBLIC_CHATKIT_DOMAIN_KEY="domain_pk_xxxxx"
-export TWILIO_ACCOUNT_SID="ACxxxxx"
-export TWILIO_API_KEY_SID="SKxxxxx"
-export TWILIO_API_KEY_SECRET="xxxxx"
-export TWILIO_PHONE_NUMBER="+1234567890"
-export GCP_PROJECT_ID="your-project-id"
+# Copy example file
+cp .env.example .env.local
+
+# Edit .env.local with your credentials
+# Fill in all required values for:
+# - OpenAI (API key, workflow ID, domain key)
+# - Twilio (account SID, API key, phone number)
+# - Google Cloud (project ID, region, service name)
 ```
 
-#### Step 3: Build Docker Image (8-12 minutes)
+The deployment scripts will automatically load these values.
+
+#### Step 3: Deploy Using Script (10-15 minutes)
+
+Use the provided deployment script which handles everything automatically:
+
 ```bash
-docker build --platform linux/amd64 \
-  --build-arg NEXT_PUBLIC_WORKFLOW_ID="$NEXT_PUBLIC_WORKFLOW_ID" \
-  --build-arg NEXT_PUBLIC_CHATKIT_DOMAIN_KEY="$NEXT_PUBLIC_CHATKIT_DOMAIN_KEY" \
-  -t gcr.io/$GCP_PROJECT_ID/chatkit-app:latest \
-  -f Dockerfile .
+# Make script executable
+chmod +x scripts/deploy-cloudrun.sh
+
+# Deploy to Cloud Run
+./scripts/deploy-cloudrun.sh
 ```
 
-**Note:** Use `Dockerfile` for production, `Dockerfile.virtual-display` only for local VNC debugging.
+**OR** for virtual display support (browser automation):
 
-#### Step 4: Push to Google Container Registry (3-5 minutes)
 ```bash
-docker push gcr.io/$GCP_PROJECT_ID/chatkit-app:latest
+chmod +x scripts/deploy-cloudrun-virtual-display.sh
+./scripts/deploy-cloudrun-virtual-display.sh
 ```
 
-#### Step 5: Deploy to Cloud Run (1-2 minutes)
-```bash
-gcloud run deploy chatkit-app \
-  --image gcr.io/$GCP_PROJECT_ID/chatkit-app:latest \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --memory 2Gi \
-  --cpu 1 \
-  --port 8080 \
-  --set-env-vars "OPENAI_API_KEY=$OPENAI_API_KEY,TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID,TWILIO_API_KEY_SID=$TWILIO_API_KEY_SID,TWILIO_API_KEY_SECRET=$TWILIO_API_KEY_SECRET,TWILIO_PHONE_NUMBER=$TWILIO_PHONE_NUMBER"
-```
+The script will:
+- Load configuration from `.env.local`
+- Build the Docker image
+- Push to Google Container Registry
+- Deploy to Cloud Run
+- Return your service URL
 
-#### Step 6: Configure Twilio Webhook (2 minutes)
-```bash
-# Get your deployed URL
-gcloud run services describe chatkit-app --region us-central1 --format='value(status.url)'
-```
+#### Step 4: Configure Twilio Webhook (2 minutes)
+
+After deployment, the script displays your service URL. Use it to configure Twilio:
 
 Example output:
 ```
@@ -265,103 +265,32 @@ gcloud services enable run.googleapis.com
 gcloud services enable containerregistry.googleapis.com
 ```
 
-##### Required Environment Variables
+##### Easy Deployment with Scripts
 
-Set these environment variables before deployment:
-
-```bash
-# OpenAI Configuration (REQUIRED)
-export OPENAI_API_KEY="sk-proj-xxxxx"                           # Your OpenAI API key
-export NEXT_PUBLIC_WORKFLOW_ID="wf_xxxxx"               # Your ChatKit workflow ID
-export NEXT_PUBLIC_CHATKIT_DOMAIN_KEY="domain_pk_xxxxx"         # Your ChatKit domain key
-
-# Twilio Configuration (REQUIRED for SMS)
-export TWILIO_ACCOUNT_SID="ACxxxxx"                             # Your Twilio Account SID
-export TWILIO_API_KEY_SID="SKxxxxx"                             # Your Twilio API Key SID
-export TWILIO_API_KEY_SECRET="xxxxx"                            # Your Twilio API Key Secret
-export TWILIO_PHONE_NUMBER="+1234567890"                        # Your Twilio phone number
-
-# Google Cloud Configuration (REQUIRED)
-export GCP_PROJECT_ID="your-project-id"                         # Your GCP project ID
-export GCP_REGION="us-central1"                                 # GCP region for deployment
-export SERVICE_NAME="chatkit-virtual-display"                   # Cloud Run service name
-```
-
-##### Full Deployment Command
-
-Deploy to Google Cloud Run with all configurations:
+The recommended approach is to use the provided deployment scripts which automatically load configuration from `.env.local`:
 
 ```bash
-# 1. Build Docker image for Cloud Run (linux/amd64)
-docker build --platform linux/amd64 \
-  -f Dockerfile.virtual-display \
-  --build-arg NEXT_PUBLIC_WORKFLOW_ID=$NEXT_PUBLIC_WORKFLOW_ID \
-  --build-arg NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=$NEXT_PUBLIC_CHATKIT_DOMAIN_KEY \
-  -t gcr.io/$GCP_PROJECT_ID/$SERVICE_NAME:latest .
+# 1. Configure .env.local with your credentials
+cp .env.example .env.local
+# Edit .env.local with your values
 
-# 2. Push Docker image to Google Container Registry
-docker push gcr.io/$GCP_PROJECT_ID/$SERVICE_NAME:latest
+# 2. Make scripts executable
+chmod +x scripts/*.sh
 
-# 3. Deploy to Cloud Run with all environment variables
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$GCP_PROJECT_ID/$SERVICE_NAME:latest \
-  --platform managed \
-  --region $GCP_REGION \
-  --project $GCP_PROJECT_ID \
-  --allow-unauthenticated \
-  --min-instances 0 \
-  --max-instances 10 \
-  --memory 2Gi \
-  --cpu 1 \
-  --port 8080 \
-  --timeout 300 \
-  --set-env-vars "\
-NODE_ENV=production,\
-DISPLAY=:99,\
-VIRTUAL_DISPLAY=true,\
-BROWSER_VISIBLE=true,\
-OPENAI_API_KEY=$OPENAI_API_KEY,\
-NEXT_PUBLIC_WORKFLOW_ID=$NEXT_PUBLIC_WORKFLOW_ID,\
-NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=$NEXT_PUBLIC_CHATKIT_DOMAIN_KEY,\
-TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID,\
-TWILIO_API_KEY_SID=$TWILIO_API_KEY_SID,\
-TWILIO_API_KEY_SECRET=$TWILIO_API_KEY_SECRET,\
-TWILIO_PHONE_NUMBER=$TWILIO_PHONE_NUMBER"
+# 3. Deploy to Cloud Run
+./scripts/deploy-cloudrun-virtual-display.sh
 ```
 
-##### One-Line Deployment (Copy-Paste Ready)
+The script handles:
+- Loading all configuration from `.env.local`
+- Building the Docker image
+- Pushing to Google Container Registry
+- Deploying to Cloud Run with proper settings
+- Displaying your service URL
 
-```bash
-export OPENAI_API_KEY="sk-proj-xxxxx" && \
-export NEXT_PUBLIC_WORKFLOW_ID="wf_xxxxx" && \
-export NEXT_PUBLIC_CHATKIT_DOMAIN_KEY="domain_pk_xxxxx" && \
-export TWILIO_ACCOUNT_SID="ACxxxxx" && \
-export TWILIO_API_KEY_SID="SKxxxxx" && \
-export TWILIO_API_KEY_SECRET="xxxxx" && \
-export TWILIO_PHONE_NUMBER="+1234567890" && \
-export GCP_PROJECT_ID="your-project-id" && \
-export GCP_REGION="us-central1" && \
-export SERVICE_NAME="chatkit-virtual-display" && \
-docker build --platform linux/amd64 -f Dockerfile.virtual-display --build-arg NEXT_PUBLIC_WORKFLOW_ID=$NEXT_PUBLIC_WORKFLOW_ID --build-arg NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=$NEXT_PUBLIC_CHATKIT_DOMAIN_KEY -t gcr.io/$GCP_PROJECT_ID/$SERVICE_NAME:latest . && \
-docker push gcr.io/$GCP_PROJECT_ID/$SERVICE_NAME:latest && \
-gcloud run deploy $SERVICE_NAME --image gcr.io/$GCP_PROJECT_ID/$SERVICE_NAME:latest --platform managed --region $GCP_REGION --project $GCP_PROJECT_ID --allow-unauthenticated --min-instances 0 --max-instances 10 --memory 2Gi --cpu 1 --port 8080 --timeout 300 --set-env-vars "NODE_ENV=production,DISPLAY=:99,VIRTUAL_DISPLAY=true,BROWSER_VISIBLE=true,OPENAI_API_KEY=$OPENAI_API_KEY,NEXT_PUBLIC_WORKFLOW_ID=$NEXT_PUBLIC_WORKFLOW_ID,NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=$NEXT_PUBLIC_CHATKIT_DOMAIN_KEY,TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID,TWILIO_API_KEY_SID=$TWILIO_API_KEY_SID,TWILIO_API_KEY_SECRET=$TWILIO_API_KEY_SECRET,TWILIO_PHONE_NUMBER=$TWILIO_PHONE_NUMBER"
-```
+##### Manual Deployment (Advanced)
 
-##### Update Existing Deployment (Add/Update Environment Variables)
-
-If you need to update environment variables on an existing deployment:
-
-```bash
-gcloud run services update $SERVICE_NAME \
-  --platform managed \
-  --region $GCP_REGION \
-  --project $GCP_PROJECT_ID \
-  --update-env-vars "\
-TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID,\
-TWILIO_API_KEY_SID=$TWILIO_API_KEY_SID,\
-TWILIO_API_KEY_SECRET=$TWILIO_API_KEY_SECRET,\
-TWILIO_PHONE_NUMBER=$TWILIO_PHONE_NUMBER"
-```
+If you prefer manual control, you can still deploy manually. The scripts will show you the commands they're running, or see [DEPLOYMENT.md](DEPLOYMENT.md) for detailed manual deployment instructions.
 
 ##### Configure Twilio Webhook
 

@@ -5,9 +5,24 @@
 
 set -e
 
-SERVICE_URL="https://chatkit-app-xaggpwlutq-uc.a.run.app"
-TEST_PHONE="+15551234567"
-TEST_MESSAGE="Tell me a quick joke about AI"
+# Load environment variables from .env.local if it exists
+if [ -f .env.local ]; then
+  export $(cat .env.local | grep -v '^#' | grep -v '^$' | xargs)
+fi
+
+# Configuration (with defaults)
+SERVICE_URL="${SERVICE_URL}"
+TEST_PHONE="${TEST_PHONE:-+15551234567}"
+TEST_MESSAGE="${TEST_MESSAGE:-Tell me a quick joke about AI}"
+GCP_PROJECT_ID="${GCP_PROJECT_ID}"
+GCP_SERVICE_NAME="${GCP_SERVICE_NAME:-chatkit-app}"
+
+# Validate required configuration
+if [ -z "$SERVICE_URL" ]; then
+  echo "Error: SERVICE_URL not set"
+  echo "Please set it in .env.local or: export SERVICE_URL=https://your-service.run.app"
+  exit 1
+fi
 
 echo ""
 echo "╔════════════════════════════════════════════════════════════╗"
@@ -76,9 +91,11 @@ echo "╔═══════════════════════�
 echo "║                     Test Complete                          ║"
 echo "╚════════════════════════════════════════════════════════════╝"
 echo ""
-echo "To view Cloud Run logs:"
-echo "  gcloud run logs tail --service=chatkit-app --project=eliza-447106"
-echo ""
+if [ -n "$GCP_PROJECT_ID" ] && [ -n "$GCP_SERVICE_NAME" ]; then
+  echo "To view Cloud Run logs:"
+  echo "  gcloud run logs tail --service=$GCP_SERVICE_NAME --project=$GCP_PROJECT_ID"
+  echo ""
+fi
 echo "To cleanup browser sessions:"
 echo "  curl -X DELETE $SERVICE_URL/api/sms-webhook"
 echo ""

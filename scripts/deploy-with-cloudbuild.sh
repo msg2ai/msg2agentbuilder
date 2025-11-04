@@ -5,13 +5,28 @@
 
 set -e
 
-PROJECT_ID="eliza-447106"
-REGION="us-central1"
+# Load environment variables from .env.local if it exists
+if [ -f .env.local ]; then
+  echo "Loading configuration from .env.local..."
+  export $(cat .env.local | grep -v '^#' | grep -v '^$' | xargs)
+fi
+
+# Configuration (with defaults)
+PROJECT_ID="${GCP_PROJECT_ID}"
+REGION="${GCP_REGION:-us-central1}"
+SERVICE_NAME="${GCP_SERVICE_NAME:-chatkit-app}"
 
 echo "╔════════════════════════════════════════════════════════════╗"
 echo "║     Deploying with Cloud Build (cloudbuild.yaml)          ║"
 echo "╚════════════════════════════════════════════════════════════╝"
 echo ""
+
+# Validate required configuration
+if [ -z "$PROJECT_ID" ]; then
+  echo "Error: GCP_PROJECT_ID not set"
+  echo "Please set it in .env.local or: export GCP_PROJECT_ID=your-project-id"
+  exit 1
+fi
 
 # Check for required environment variables
 if [ -z "$OPENAI_API_KEY" ]; then
@@ -56,7 +71,7 @@ echo "╚═══════════════════════�
 echo ""
 
 # Get service URL
-SERVICE_URL=$(gcloud run services describe chatkit-app \
+SERVICE_URL=$(gcloud run services describe $SERVICE_NAME \
   --platform managed \
   --region $REGION \
   --project $PROJECT_ID \
