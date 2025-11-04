@@ -292,53 +292,61 @@ gcloud services enable \
 
 ### Step 3: Set Up Environment Variables
 
-Create a file `deploy-env.sh` with your credentials:
+All configuration is now managed through `.env.local`. Configure your deployment variables:
 
 ```bash
-#!/bin/bash
+# Copy the example file if you haven't already
+cp .env.example .env.local
 
-# OpenAI Configuration
-export OPENAI_API_KEY="sk-proj-your_actual_key_here"
-export NEXT_PUBLIC_WORKFLOW_ID="wf_your_workflow_id_here"
-export NEXT_PUBLIC_CHATKIT_DOMAIN_KEY="domain_pk_your_domain_key_here"
+# Edit .env.local and fill in all required values
+nano .env.local  # or use your preferred editor
+```
 
-# Twilio Configuration (3 credentials required)
-export TWILIO_ACCOUNT_SID="ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-export TWILIO_API_KEY_SID="SKxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-export TWILIO_API_KEY_SECRET="your_api_key_secret_here"
-export TWILIO_PHONE_NUMBER="+1234567890"
+**Required sections to configure in `.env.local`:**
 
+1. **OpenAI Configuration** - Get from https://platform.openai.com/
+2. **Twilio Configuration** - Get from https://console.twilio.com/
+3. **Google Cloud Deployment Configuration** - Your GCP project details
+
+The deployment scripts will automatically load configuration from `.env.local`.
+
+**Example `.env.local` configuration:**
+
+```bash
 # Google Cloud Configuration
-export GCP_PROJECT_ID="YOUR_PROJECT_ID"
-export GCP_REGION="us-central1"
-export SERVICE_NAME="chatkit-app"
+GCP_PROJECT_ID=your-project-id
+GCP_SERVICE_NAME=chatkit-app
+GCP_REGION=us-central1
+GCP_MIN_INSTANCES=0
+GCP_MAX_INSTANCES=10
+GCP_MEMORY=2Gi
+GCP_CPU=1
+
+# (... plus OpenAI and Twilio credentials as shown in .env.example)
 ```
 
-**Load variables**:
+### Step 4: Option A - Deploy Using Deployment Script (Recommended)
+
+The easiest way to deploy is using the provided deployment scripts. They automatically load configuration from `.env.local`:
 
 ```bash
-source deploy-env.sh
-```
+# For standard deployment
+./scripts/deploy-cloudrun.sh
 
-### Step 4: Option A - Deploy Using Cloud Build (Recommended)
+# OR for virtual display deployment (includes Xvfb for browser automation)
+./scripts/deploy-cloudrun-virtual-display.sh
 
-This method uses `cloudbuild.yaml` for automated builds.
-
-```bash
-# Deploy with Cloud Build
-gcloud builds submit \
-  --config=cloudbuild.yaml \
-  --substitutions=\
-_OPENAI_API_KEY="${OPENAI_API_KEY}",\
-_NEXT_PUBLIC_WORKFLOW_ID="${NEXT_PUBLIC_WORKFLOW_ID}",\
-_NEXT_PUBLIC_CHATKIT_DOMAIN_KEY="${NEXT_PUBLIC_CHATKIT_DOMAIN_KEY}",\
-_TWILIO_ACCOUNT_SID="${TWILIO_ACCOUNT_SID}",\
-_TWILIO_API_KEY_SID="${TWILIO_API_KEY_SID}",\
-_TWILIO_API_KEY_SECRET="${TWILIO_API_KEY_SECRET}",\
-_TWILIO_PHONE_NUMBER="${TWILIO_PHONE_NUMBER}"
+# OR using Cloud Build
+./scripts/deploy-with-cloudbuild.sh
 ```
 
 **Build Time**: 10-15 minutes (first deployment)
+
+These scripts will:
+1. Load environment variables from `.env.local`
+2. Build and deploy your application to Cloud Run
+3. Configure all necessary settings automatically
+4. Return your deployed service URL
 
 ### Step 4: Option B - Deploy Using Local Docker Build
 
