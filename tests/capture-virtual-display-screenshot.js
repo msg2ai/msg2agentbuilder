@@ -8,10 +8,9 @@ async function captureVirtualDisplayScreenshot() {
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
+      "--disable-dev-shm-usage"
     ],
-    executablePath:
-      process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium",
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium"
   });
 
   try {
@@ -21,7 +20,7 @@ async function captureVirtualDisplayScreenshot() {
     console.log("📄 Loading application...");
     await page.goto("http://localhost:3000", {
       waitUntil: "networkidle0",
-      timeout: 30000,
+      timeout: 30000
     });
 
     await page.waitForTimeout(3000);
@@ -31,7 +30,7 @@ async function captureVirtualDisplayScreenshot() {
 
     await page.screenshot({
       path: screenshotPath,
-      fullPage: true,
+      fullPage: true
     });
 
     console.log("✅ Screenshot saved successfully!");

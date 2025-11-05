@@ -23,7 +23,7 @@ export default function TestPage() {
     // Listen for ChatKit events
     const handleChatkitMessage = (event: CustomEvent) => {
       addLog(
-        `✅ chatkit:message event: ${JSON.stringify(event.detail).substring(0, 100)}`,
+        `✅ chatkit:message event: ${JSON.stringify(event.detail).substring(0, 100)}`
       );
     };
 
@@ -33,7 +33,7 @@ export default function TestPage() {
 
     window.addEventListener(
       "chatkit:message" as any,
-      handleChatkitMessage as any,
+      handleChatkitMessage as any
     );
     window.addEventListener("chatkit:error" as any, handleChatkitError as any);
 
@@ -45,7 +45,7 @@ export default function TestPage() {
 
       if (lastResponse && lastResponse.length > 0) {
         addLog(
-          `📊 Window property update: ${lastResponse.length} chars, complete: ${isComplete}`,
+          `📊 Window property update: ${lastResponse.length} chars, complete: ${isComplete}`
         );
       }
     }, 2000);
@@ -53,11 +53,11 @@ export default function TestPage() {
     return () => {
       window.removeEventListener(
         "chatkit:message" as any,
-        handleChatkitMessage as any,
+        handleChatkitMessage as any
       );
       window.removeEventListener(
         "chatkit:error" as any,
-        handleChatkitError as any,
+        handleChatkitError as any
       );
       clearInterval(monitorInterval);
     };
@@ -66,7 +66,7 @@ export default function TestPage() {
   const sendTestMessage = async () => {
     setStatus("Sending message...");
     addLog(
-      `📤 Dispatching incoming-sms event: from=${phoneNumber}, message="${message}"`,
+      `📤 Dispatching incoming-sms event: from=${phoneNumber}, message="${message}"`
     );
 
     // Clear previous response
@@ -78,9 +78,9 @@ export default function TestPage() {
       new CustomEvent("incoming-sms", {
         detail: {
           from: phoneNumber,
-          message: message,
-        },
-      }),
+          message: message
+        }
+      })
     );
 
     setStatus("Waiting for response...");
@@ -132,7 +132,7 @@ export default function TestPage() {
       '[data-role="assistant"]',
       '[role="assistant"]',
       ".assistant-message",
-      '[data-message-role="assistant"]',
+      '[data-message-role="assistant"]'
     ];
 
     for (const selector of selectors) {
@@ -140,7 +140,7 @@ export default function TestPage() {
         const elements = chatkitElement.shadowRoot.querySelectorAll(selector);
         if (elements.length > 0) {
           addLog(
-            `✅ Found ${elements.length} elements with selector: ${selector}`,
+            `✅ Found ${elements.length} elements with selector: ${selector}`
           );
           const lastElement = elements[elements.length - 1];
           const text = lastElement.textContent || "";

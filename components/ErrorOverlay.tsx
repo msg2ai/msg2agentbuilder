@@ -13,7 +13,7 @@ export function ErrorOverlay({
   error,
   fallbackMessage,
   onRetry,
-  retryLabel,
+  retryLabel
 }: ErrorOverlayProps) {
   if (!error && !fallbackMessage) {
     return null;

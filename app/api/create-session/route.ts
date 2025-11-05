@@ -29,7 +29,7 @@ export async function POST(request: Request): Promise<Response> {
     const parsedBody = await safeParseJson<CreateSessionRequestBody>(request);
     console.log(
       "[create-session] Parsed request body:",
-      JSON.stringify(parsedBody, null, 2),
+      JSON.stringify(parsedBody, null, 2)
     );
 
     // Use API key from request body if provided, otherwise fall back to environment variable
@@ -39,18 +39,18 @@ export async function POST(request: Request): Promise<Response> {
       return new Response(
         JSON.stringify({
           error:
-            "Missing OPENAI_API_KEY (provide in request body or environment variable)",
+            "Missing OPENAI_API_KEY (provide in request body or environment variable)"
         }),
         {
           status: 500,
-          headers: { "Content-Type": "application/json" },
-        },
+          headers: { "Content-Type": "application/json" }
+        }
       );
     }
 
     console.log(
       "[create-session] Using API key from:",
-      parsedBody?.apiKey ? "request body" : "environment variable",
+      parsedBody?.apiKey ? "request body" : "environment variable"
     );
 
     const { userId, sessionCookie: resolvedSessionCookie } =
@@ -59,7 +59,7 @@ export async function POST(request: Request): Promise<Response> {
     console.log("[create-session] Resolved userId:", userId);
     console.log(
       "[create-session] Session cookie generated:",
-      sessionCookie ? "yes" : "no",
+      sessionCookie ? "yes" : "no"
     );
 
     const resolvedWorkflowId =
@@ -69,7 +69,7 @@ export async function POST(request: Request): Promise<Response> {
     if (process.env.NODE_ENV !== "production") {
       console.info("[create-session] handling request", {
         resolvedWorkflowId,
-        body: JSON.stringify(parsedBody),
+        body: JSON.stringify(parsedBody)
       });
     }
 
@@ -79,7 +79,7 @@ export async function POST(request: Request): Promise<Response> {
         { error: "Missing workflow id" },
         400,
         { "Content-Type": "application/json" },
-        sessionCookie,
+        sessionCookie
       );
     }
 
@@ -92,23 +92,23 @@ export async function POST(request: Request): Promise<Response> {
       chatkit_configuration: {
         file_upload: {
           enabled:
-            parsedBody?.chatkit_configuration?.file_upload?.enabled ?? false,
-        },
-      },
+            parsedBody?.chatkit_configuration?.file_upload?.enabled ?? false
+        }
+      }
     };
 
     console.log(
-      "[create-session] ========== Sending request to OpenAI ==========",
+      "[create-session] ========== Sending request to OpenAI =========="
     );
     console.log("[create-session] URL:", url);
     console.log(
       "[create-session] Payload:",
-      JSON.stringify(requestPayload, null, 2),
+      JSON.stringify(requestPayload, null, 2)
     );
     console.log("[create-session] Headers:", {
       "Content-Type": "application/json",
       "OpenAI-Beta": "chatkit_beta=v1",
-      Authorization: `Bearer ${openaiApiKey.substring(0, 10)}...`,
+      Authorization: `Bearer ${openaiApiKey.substring(0, 10)}...`
     });
 
     const upstreamResponse = await fetch(url, {
@@ -116,59 +116,59 @@ export async function POST(request: Request): Promise<Response> {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${openaiApiKey}`,
-        "OpenAI-Beta": "chatkit_beta=v1",
+        "OpenAI-Beta": "chatkit_beta=v1"
       },
-      body: JSON.stringify(requestPayload),
+      body: JSON.stringify(requestPayload)
     });
 
     console.log(
-      "[create-session] ========== Received response from OpenAI ==========",
+      "[create-session] ========== Received response from OpenAI =========="
     );
     console.log("[create-session] Status:", upstreamResponse.status);
     console.log("[create-session] Status text:", upstreamResponse.statusText);
     console.log(
       "[create-session] Response headers:",
-      Object.fromEntries(upstreamResponse.headers.entries()),
+      Object.fromEntries(upstreamResponse.headers.entries())
     );
 
     const upstreamJson = (await upstreamResponse.json().catch((err) => {
       console.error(
         "[create-session] ERROR: Failed to parse upstream response JSON:",
-        err,
+        err
       );
       return {};
     })) as Record<string, unknown> | undefined;
 
     console.log(
       "[create-session] Upstream response body:",
-      JSON.stringify(upstreamJson, null, 2),
+      JSON.stringify(upstreamJson, null, 2)
     );
 
     if (!upstreamResponse.ok) {
       const upstreamError = extractUpstreamError(upstreamJson);
       console.error(
-        "[create-session] ========== ERROR: OpenAI ChatKit session creation failed ==========",
+        "[create-session] ========== ERROR: OpenAI ChatKit session creation failed =========="
       );
       console.error("[create-session] Status:", upstreamResponse.status);
       console.error(
         "[create-session] Status text:",
-        upstreamResponse.statusText,
+        upstreamResponse.statusText
       );
       console.error("[create-session] Extracted error:", upstreamError);
       console.error(
         "[create-session] Full response body:",
-        JSON.stringify(upstreamJson, null, 2),
+        JSON.stringify(upstreamJson, null, 2)
       );
       return buildJsonResponse(
         {
           error:
             upstreamError ??
             `Failed to create session: ${upstreamResponse.statusText}`,
-          details: upstreamJson,
+          details: upstreamJson
         },
         upstreamResponse.status,
         { "Content-Type": "application/json" },
-        sessionCookie,
+        sessionCookie
       );
     }
 
@@ -176,35 +176,35 @@ export async function POST(request: Request): Promise<Response> {
     const expiresAfter = upstreamJson?.expires_after ?? null;
     const responsePayload = {
       client_secret: clientSecret,
-      expires_after: expiresAfter,
+      expires_after: expiresAfter
     };
 
     console.log(
-      "[create-session] ========== Success! Sending response to client ==========",
+      "[create-session] ========== Success! Sending response to client =========="
     );
     console.log(
       "[create-session] Response payload:",
-      JSON.stringify(responsePayload, null, 2),
+      JSON.stringify(responsePayload, null, 2)
     );
 
     return buildJsonResponse(
       responsePayload,
       200,
       { "Content-Type": "application/json" },
-      sessionCookie,
+      sessionCookie
     );
   } catch (error) {
     console.error("[create-session] ========== UNEXPECTED ERROR ==========");
     console.error("[create-session] Error:", error);
     console.error(
       "[create-session] Error stack:",
-      error instanceof Error ? error.stack : "N/A",
+      error instanceof Error ? error.stack : "N/A"
     );
     return buildJsonResponse(
       { error: "Unexpected error" },
       500,
       { "Content-Type": "application/json" },
-      sessionCookie,
+      sessionCookie
     );
   }
 }
@@ -216,7 +216,7 @@ export async function GET(): Promise<Response> {
 function methodNotAllowedResponse(): Response {
   return new Response(JSON.stringify({ error: "Method Not Allowed" }), {
     status: 405,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" }
   });
 }
 
@@ -226,7 +226,7 @@ async function resolveUserId(request: Request): Promise<{
 }> {
   const existing = getCookieValue(
     request.headers.get("cookie"),
-    SESSION_COOKIE_NAME,
+    SESSION_COOKIE_NAME
   );
   if (existing) {
     return { userId: existing, sessionCookie: null };
@@ -239,13 +239,13 @@ async function resolveUserId(request: Request): Promise<{
 
   return {
     userId: generated,
-    sessionCookie: serializeSessionCookie(generated),
+    sessionCookie: serializeSessionCookie(generated)
   };
 }
 
 function getCookieValue(
   cookieHeader: string | null,
-  name: string,
+  name: string
 ): string | null {
   if (!cookieHeader) {
     return null;
@@ -270,7 +270,7 @@ function serializeSessionCookie(value: string): string {
     "Path=/",
     `Max-Age=${SESSION_COOKIE_MAX_AGE}`,
     "HttpOnly",
-    "SameSite=Lax",
+    "SameSite=Lax"
   ];
 
   if (process.env.NODE_ENV === "production") {
@@ -283,7 +283,7 @@ function buildJsonResponse(
   payload: unknown,
   status: number,
   headers: Record<string, string>,
-  sessionCookie: string | null,
+  sessionCookie: string | null
 ): Response {
   const responseHeaders = new Headers(headers);
 
@@ -293,7 +293,7 @@ function buildJsonResponse(
 
   return new Response(JSON.stringify(payload), {
     status,
-    headers: responseHeaders,
+    headers: responseHeaders
   });
 }
 
@@ -310,7 +310,7 @@ async function safeParseJson<T>(req: Request): Promise<T | null> {
 }
 
 function extractUpstreamError(
-  payload: Record<string, unknown> | undefined,
+  payload: Record<string, unknown> | undefined
 ): string | null {
   if (!payload) {
     return null;

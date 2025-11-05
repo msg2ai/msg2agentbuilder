@@ -23,7 +23,7 @@ async function checkWorkflowAPI() {
   const endpoints = [
     `/v1/chatkit/workflows/${WORKFLOW_ID}`,
     `/v1/workflows/${WORKFLOW_ID}`,
-    `/v1/beta/workflows/${WORKFLOW_ID}`,
+    `/v1/beta/workflows/${WORKFLOW_ID}`
   ];
 
   for (const endpoint of endpoints) {
@@ -33,8 +33,8 @@ async function checkWorkflowAPI() {
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${API_KEY}`,
-        "OpenAI-Beta": "chatkit_beta=v1",
-      },
+        "OpenAI-Beta": "chatkit_beta=v1"
+      }
     });
 
     console.log(`Status: ${response.status}`);

@@ -25,10 +25,10 @@ async function testVirtualDisplay() {
   console.log("📋 Test 1: Environment Check");
   console.log(`   DISPLAY: ${process.env.DISPLAY || "NOT SET"}`);
   console.log(
-    `   PUPPETEER_HEADLESS: ${process.env.PUPPETEER_HEADLESS || "NOT SET"}`,
+    `   PUPPETEER_HEADLESS: ${process.env.PUPPETEER_HEADLESS || "NOT SET"}`
   );
   console.log(
-    `   PUPPETEER_EXECUTABLE_PATH: ${process.env.PUPPETEER_EXECUTABLE_PATH || "NOT SET"}`,
+    `   PUPPETEER_EXECUTABLE_PATH: ${process.env.PUPPETEER_EXECUTABLE_PATH || "NOT SET"}`
   );
   console.log("   ✅ Environment configured\n");
 
@@ -39,10 +39,9 @@ async function testVirtualDisplay() {
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
+      "--disable-dev-shm-usage"
     ],
-    executablePath:
-      process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium",
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium"
   });
   console.log("   ✅ Browser launched successfully in non-headless mode\n");
 
@@ -117,7 +116,7 @@ async function testVirtualDisplay() {
     // Test 5: Wait for JavaScript execution
     console.log("📋 Test 5: JavaScript Execution Verification");
     await page.waitForFunction(() => window.testCompleted === true, {
-      timeout: 5000,
+      timeout: 5000
     });
     const result = await page.evaluate(() => window.testResult);
     console.log(`   ✅ JavaScript executed successfully`);
@@ -126,10 +125,10 @@ async function testVirtualDisplay() {
     // Test 6: DOM Manipulation
     console.log("📋 Test 6: DOM Manipulation");
     const title = await page.evaluate(
-      () => document.querySelector("h1").textContent,
+      () => document.querySelector("h1").textContent
     );
     const status = await page.evaluate(
-      () => document.getElementById("status").textContent,
+      () => document.getElementById("status").textContent
     );
     console.log(`   Title: ${title}`);
     console.log(`   Status: ${status}`);
@@ -140,7 +139,7 @@ async function testVirtualDisplay() {
     const screenshotPath = "/app/virtual-display-proof-screenshot.png";
     await page.screenshot({
       path: screenshotPath,
-      fullPage: true,
+      fullPage: true
     });
 
     const fs = require("fs");
@@ -162,7 +161,7 @@ async function testVirtualDisplay() {
         maps: "available",
         localStorage:
           typeof localStorage !== "undefined" ? "available" : "not available",
-        fetch: typeof fetch !== "undefined" ? "available" : "not available",
+        fetch: typeof fetch !== "undefined" ? "available" : "not available"
       };
     });
     console.log("   Features available:", JSON.stringify(jsTest, null, 2));

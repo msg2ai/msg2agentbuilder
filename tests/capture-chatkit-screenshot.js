@@ -20,8 +20,8 @@ async function captureChatKit() {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
+        "--disable-gpu"
+      ]
     });
 
     const page = await browser.newPage();
@@ -69,12 +69,12 @@ async function captureChatKit() {
             hasChat,
             inputCount,
             buttonCount,
-            preview: bodyText.substring(0, 100).replace(/\s+/g, " "),
+            preview: bodyText.substring(0, 100).replace(/\s+/g, " ")
           };
         });
 
         console.log(
-          `  [${i}s] Inputs: ${status.inputCount}, Buttons: ${status.buttonCount}, Loading: ${status.hasLoading}`,
+          `  [${i}s] Inputs: ${status.inputCount}, Buttons: ${status.buttonCount}, Loading: ${status.hasLoading}`
         );
         console.log(`  [${i}s] Content: "${status.preview}..."`);
       }
@@ -94,7 +94,7 @@ async function captureChatKit() {
           chatKitElements.push({
             tag: el.tagName,
             id: el.id,
-            hasShadow: true,
+            hasShadow: true
           });
         }
 
@@ -107,7 +107,7 @@ async function captureChatKit() {
             chatKitElements.push({
               tag: el.tagName,
               attr: attr.name,
-              value: attr.value,
+              value: attr.value
             });
           }
         });
@@ -123,11 +123,11 @@ async function captureChatKit() {
         shadowDOMCount:
           document.querySelectorAll("*").length -
           Array.from(document.querySelectorAll("*")).filter(
-            (el) => !el.shadowRoot,
+            (el) => !el.shadowRoot
           ).length,
         chatKitElements,
         hasLoadingText: bodyText.includes("Loading"),
-        title: document.title,
+        title: document.title
       };
     });
 
@@ -143,7 +143,7 @@ async function captureChatKit() {
       console.log("  ChatKit elements found:");
       finalState.chatKitElements.forEach((el) => {
         console.log(
-          `    - ${el.tag} ${el.id ? `id="${el.id}"` : ""} ${el.hasShadow ? "(has shadow)" : ""}`,
+          `    - ${el.tag} ${el.id ? `id="${el.id}"` : ""} ${el.hasShadow ? "(has shadow)" : ""}`
         );
       });
       console.log("");

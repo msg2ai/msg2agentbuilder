@@ -20,8 +20,8 @@ async function testChatKitInteraction() {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
+        "--disable-gpu"
+      ]
     });
 
     const page = await browser.newPage();
@@ -51,7 +51,7 @@ async function testChatKitInteraction() {
       () => {
         return window.__chatkitReady === true;
       },
-      { timeout: 15000 },
+      { timeout: 15000 }
     );
     console.log("✓ ChatKit is ready!\n");
 
@@ -66,7 +66,7 @@ async function testChatKitInteraction() {
       return {
         bodyPreview: bodyText.substring(0, 200),
         hasLoading: bodyText.includes("Loading"),
-        chatkitReady: window.__chatkitReady,
+        chatkitReady: window.__chatkitReady
       };
     });
 
@@ -74,7 +74,7 @@ async function testChatKitInteraction() {
     console.log(`  ChatKit Ready: ${initialState.chatkitReady}`);
     console.log(`  Has Loading Text: ${initialState.hasLoading}`);
     console.log(
-      `  Body Preview: "${initialState.bodyPreview.substring(0, 100)}..."\n`,
+      `  Body Preview: "${initialState.bodyPreview.substring(0, 100)}..."\n`
     );
 
     // Try to inject a test message using the incoming-sms event
@@ -88,9 +88,9 @@ async function testChatKitInteraction() {
         new CustomEvent("incoming-sms", {
           detail: {
             from: "+15551234567",
-            message: "Hello! This is a test message from Puppeteer.",
-          },
-        }),
+            message: "Hello! This is a test message from Puppeteer."
+          }
+        })
       );
 
       return { dispatched: true };
@@ -107,12 +107,12 @@ async function testChatKitInteraction() {
         () => {
           return window.__chatkitResponseComplete === true;
         },
-        { timeout: 30000 },
+        { timeout: 30000 }
       );
       console.log("✓ Response received!\n");
     } catch (timeoutError) {
       console.log(
-        "⚠️  No response within 30 seconds (this might be expected)\n",
+        "⚠️  No response within 30 seconds (this might be expected)\n"
       );
     }
 
@@ -121,7 +121,7 @@ async function testChatKitInteraction() {
       return {
         hasResponse: window.__chatkitResponseComplete === true,
         responseText: window.__chatkitLastResponse || null,
-        responseTimestamp: window.__chatkitResponseTimestamp || null,
+        responseTimestamp: window.__chatkitResponseTimestamp || null
       };
     });
 
@@ -129,13 +129,13 @@ async function testChatKitInteraction() {
     console.log(`  Has Response: ${responseData.hasResponse}`);
     if (responseData.responseText) {
       console.log(
-        `  Response Length: ${responseData.responseText.length} characters`,
+        `  Response Length: ${responseData.responseText.length} characters`
       );
       console.log(
-        `  Response Preview: "${responseData.responseText.substring(0, 200)}..."`,
+        `  Response Preview: "${responseData.responseText.substring(0, 200)}..."`
       );
       console.log(
-        `  Timestamp: ${responseData.responseTimestamp ? new Date(responseData.responseTimestamp).toISOString() : "N/A"}`,
+        `  Timestamp: ${responseData.responseTimestamp ? new Date(responseData.responseTimestamp).toISOString() : "N/A"}`
       );
     } else {
       console.log(`  No response captured yet`);
@@ -177,8 +177,8 @@ async function testChatKitInteraction() {
         hasLoading: bodyText.includes("Loading"),
         shadowTexts: allText,
         messageElements: document.querySelectorAll(
-          '[data-message], [class*="message"]',
-        ).length,
+          '[data-message], [class*="message"]'
+        ).length
       };
     });
 
@@ -198,12 +198,12 @@ async function testChatKitInteraction() {
     console.log("═══════════════════════════════════════════════════════════");
     console.log("📊 INTERACTION TEST SUMMARY");
     console.log(
-      "═══════════════════════════════════════════════════════════\n",
+      "═══════════════════════════════════════════════════════════\n"
     );
     console.log(`✅ ChatKit initialized: YES`);
     console.log(`✅ Message sent: YES`);
     console.log(
-      `${responseData.hasResponse ? "✅" : "❌"} Response received: ${responseData.hasResponse ? "YES" : "NO"}`,
+      `${responseData.hasResponse ? "✅" : "❌"} Response received: ${responseData.hasResponse ? "YES" : "NO"}`
     );
     console.log(`📸 Screenshots captured: 3\n`);
 

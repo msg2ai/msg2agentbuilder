@@ -16,11 +16,11 @@ console.log("");
 // Check environment variables
 console.log("📋 Step 1: Environment Variables Check");
 console.log(
-  `   OPENAI_API_KEY: ${OPENAI_API_KEY ? `${OPENAI_API_KEY.substring(0, 20)}...` : "MISSING"}`,
+  `   OPENAI_API_KEY: ${OPENAI_API_KEY ? `${OPENAI_API_KEY.substring(0, 20)}...` : "MISSING"}`
 );
 console.log(`   WORKFLOW_ID: ${WORKFLOW_ID || "MISSING"}`);
 console.log(
-  `   DOMAIN_KEY: ${DOMAIN_KEY ? `${DOMAIN_KEY.substring(0, 20)}...` : "MISSING"}`,
+  `   DOMAIN_KEY: ${DOMAIN_KEY ? `${DOMAIN_KEY.substring(0, 20)}...` : "MISSING"}`
 );
 console.log("");
 
@@ -45,9 +45,9 @@ async function testChatKitAPI() {
       user: "test-user-" + Date.now(),
       chatkit_configuration: {
         file_upload: {
-          enabled: false,
-        },
-      },
+          enabled: false
+        }
+      }
     };
 
     console.log("   URL:", url);
@@ -60,9 +60,9 @@ async function testChatKitAPI() {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${OPENAI_API_KEY}`,
-        "OpenAI-Beta": "chatkit_beta=v1",
+        "OpenAI-Beta": "chatkit_beta=v1"
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(payload)
     });
 
     console.log("📋 Step 3: Response Analysis");
@@ -83,7 +83,7 @@ async function testChatKitAPI() {
           console.log("🎉 ChatKit API is working correctly!");
           console.log(
             "   Client secret received:",
-            data.client_secret.substring(0, 20) + "...",
+            data.client_secret.substring(0, 20) + "..."
           );
         }
       } catch (e) {
@@ -159,12 +159,12 @@ async function testNetworkConnectivity() {
     const testResponse = await fetch("https://api.openai.com/v1/models", {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
-      },
+        Authorization: `Bearer ${OPENAI_API_KEY}`
+      }
     });
 
     console.log(
-      `   OpenAI API reachable: ${testResponse.ok ? "✅ YES" : "❌ NO"}`,
+      `   OpenAI API reachable: ${testResponse.ok ? "✅ YES" : "❌ NO"}`
     );
     console.log(`   Status: ${testResponse.status}`);
   } catch (error) {

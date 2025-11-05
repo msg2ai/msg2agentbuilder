@@ -33,8 +33,8 @@ async function testVirtualDisplay() {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
+        "--disable-gpu"
+      ]
     };
 
     // Add display flag if running on Linux with virtual display
@@ -68,7 +68,7 @@ async function testVirtualDisplay() {
         height: window.innerHeight,
         userAgent: navigator.userAgent,
         hasWindow: typeof window !== "undefined",
-        hasDocument: typeof document !== "undefined",
+        hasDocument: typeof document !== "undefined"
       };
     });
 
@@ -111,20 +111,20 @@ async function testVirtualDisplay() {
     const shadowTest = await page.evaluate(() => {
       return {
         shadowDOMExists: !!document.getElementById("shadow-host").shadowRoot,
-        outputText: document.getElementById("output").innerText,
+        outputText: document.getElementById("output").innerText
       };
     });
 
     console.log(
       "  Shadow DOM Test:",
-      shadowTest.shadowDOMExists ? "✅ Passed" : "❌ Failed",
+      shadowTest.shadowDOMExists ? "✅ Passed" : "❌ Failed"
     );
     console.log("  Output:", shadowTest.outputText);
 
     // Save ChatKit test screenshot
     const chatkitScreenshot = path.join(
       __dirname,
-      "test-chatkit-screenshot.png",
+      "test-chatkit-screenshot.png"
     );
     await page.screenshot({ path: chatkitScreenshot, fullPage: true });
     console.log(`  Screenshot: ${chatkitScreenshot}\n`);

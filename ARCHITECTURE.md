@@ -633,7 +633,7 @@ const isValid = validateRequest(
   authToken,
   twilioSignature,
   webhookUrl,
-  requestBody,
+  requestBody
 );
 ```
 
@@ -656,8 +656,8 @@ const browser = await puppeteer.launch({
   headless: false, // Needs display for ChatKit
   args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
   env: {
-    DISPLAY: ":99", // Use Xvfb virtual display
-  },
+    DISPLAY: ":99" // Use Xvfb virtual display
+  }
 });
 ```
 

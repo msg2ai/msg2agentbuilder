@@ -14,8 +14,8 @@ async function test() {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
+        "--disable-gpu"
+      ]
     });
     console.log("✅ Browser launched successfully\n");
 
@@ -28,7 +28,7 @@ async function test() {
 
     await page.goto("http://localhost:3001", {
       waitUntil: "networkidle2",
-      timeout: 30000,
+      timeout: 30000
     });
     console.log("✅ Page loaded\n");
 
@@ -45,21 +45,21 @@ async function test() {
         return {
           hasControl: typeof window.chatkit.control !== "undefined",
           hasSendMessage:
-            typeof window.chatkit.control?.sendMessage === "function",
+            typeof window.chatkit.control?.sendMessage === "function"
         };
       });
 
       console.log("   Control API:", chatkitInfo.hasControl ? "✅" : "❌");
       console.log(
         "   sendMessage():",
-        chatkitInfo.hasSendMessage ? "✅" : "❌",
+        chatkitInfo.hasSendMessage ? "✅" : "❌"
       );
       console.log("");
     } else {
       console.log("❌ ChatKit not found on the page\n");
       console.log("Troubleshooting:");
       console.log(
-        "- Is http://localhost:3000 showing the ChatKit UI in a browser?",
+        "- Is http://localhost:3000 showing the ChatKit UI in a browser?"
       );
       console.log("- Check browser console for errors");
       console.log("- Make sure NEXT_PUBLIC_WORKFLOW_ID is set in .env.local");
@@ -78,7 +78,7 @@ async function test() {
       console.log("\nTroubleshooting:");
       console.log("- Install Chromium: brew install chromium");
       console.log(
-        "- Or let Puppeteer download it: npx puppeteer browsers install chrome",
+        "- Or let Puppeteer download it: npx puppeteer browsers install chrome"
       );
     }
   }

@@ -19,10 +19,10 @@ async function captureVirtualDisplayScreenshot() {
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
+        "--disable-dev-shm-usage"
       ],
       executablePath:
-        process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium",
+        process.env.PUPPETEER_EXECUTABLE_PATH || "/usr/bin/chromium"
     });
 
     const page = await browser.newPage();
@@ -139,13 +139,13 @@ async function captureVirtualDisplayScreenshot() {
     const screenshotPath = "/app/vnc-active-screenshot.png";
     await page.screenshot({
       path: screenshotPath,
-      fullPage: true,
+      fullPage: true
     });
 
     console.log("✅ Screenshot captured successfully!");
     console.log(`📸 Location: ${screenshotPath}`);
     console.log(
-      `\nThis screenshot shows what you would see via VNC connection.`,
+      `\nThis screenshot shows what you would see via VNC connection.`
     );
     console.log(`The virtual display is running and accessible.\n`);
   } catch (error) {

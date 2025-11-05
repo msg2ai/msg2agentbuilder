@@ -46,7 +46,7 @@ function cleanResponse(text: string): string {
   // Remove any remaining code-like patterns
   cleaned = cleaned.replace(
     /\b(if|var|function|return|document|window)\s*\(/g,
-    "",
+    ""
   );
 
   // Remove common UI noise patterns (case-insensitive)
@@ -57,7 +57,7 @@ function cleanResponse(text: string): string {
     /\bShare\b/gi,
     /\bRetry\b/gi,
     /\bStop generating\b/gi,
-    /\bRegenerate\b/gi,
+    /\bRegenerate\b/gi
   ];
 
   for (const pattern of noisePatterns) {
@@ -104,7 +104,7 @@ function checkRateLimit(phoneNumber: string): {
   // Check if limit exceeded
   if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
     const retryAfter = Math.ceil(
-      (entry.firstRequest + RATE_LIMIT_WINDOW - now) / 1000,
+      (entry.firstRequest + RATE_LIMIT_WINDOW - now) / 1000
     );
     return { allowed: false, retryAfter };
   }
@@ -134,7 +134,7 @@ function getTwilioClient() {
 
     if (!accountSid || !apiKeySid || !apiKeySecret) {
       throw new Error(
-        "Missing Twilio credentials. Required: TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET",
+        "Missing Twilio credentials. Required: TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET"
       );
     }
 
@@ -157,7 +157,7 @@ interface BrowserSession {
 const browserSessions = new Map<string, BrowserSession>();
 
 async function getOrCreateBrowserSession(
-  phoneNumber: string,
+  phoneNumber: string
 ): Promise<BrowserSession> {
   let session = browserSessions.get(phoneNumber);
 
@@ -198,9 +198,9 @@ async function getOrCreateBrowserSession(
       "--disable-features=IsolateOrigins,site-per-process",
       "--disable-site-isolation-trials",
       "--allow-running-insecure-content",
-      "--disable-blink-features=AutomationControlled",
+      "--disable-blink-features=AutomationControlled"
     ],
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH
   });
 
   const page = await browser.newPage();
@@ -234,7 +234,7 @@ async function getOrCreateBrowserSession(
           console.log(
             "[sse-intercept] 📡 Captured conversation response:",
             text.length,
-            "bytes",
+            "bytes"
           );
 
           // Parse SSE format and extract assistant response
@@ -288,12 +288,12 @@ async function getOrCreateBrowserSession(
             capturedSSEResponse = assistantText;
             console.log(
               "[sse-intercept] ✅ Extracted assistant response:",
-              assistantText.substring(0, 100),
+              assistantText.substring(0, 100)
             );
             console.log(
               "[sse-intercept] Response length:",
               assistantText.length,
-              "chars",
+              "chars"
             );
           }
         }
@@ -305,7 +305,7 @@ async function getOrCreateBrowserSession(
 
   // Set realistic user agent to avoid detection
   await page.setUserAgent(
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
   );
 
   // Set additional headers
@@ -313,7 +313,7 @@ async function getOrCreateBrowserSession(
     "Accept-Language": "en-US,en;q=0.9",
     Accept:
       "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    Origin: "http://localhost:3001",
+    Origin: "http://localhost:3001"
   });
 
   // Enable console logging from the browser
@@ -340,11 +340,11 @@ async function getOrCreateBrowserSession(
 
   await page.goto(appUrl, {
     waitUntil: "networkidle0",
-    timeout: 60000,
+    timeout: 60000
   });
 
   console.log(
-    "[browserless] Page loaded, waiting for ChatKitPanel to initialize...",
+    "[browserless] Page loaded, waiting for ChatKitPanel to initialize..."
   );
 
   // Wait for ChatKitPanel's incoming-sms listener to be registered
@@ -353,25 +353,25 @@ async function getOrCreateBrowserSession(
       () => {
         return (window as any).__chatkitReady === true;
       },
-      { timeout: 30000 },
+      { timeout: 30000 }
     );
     console.log("[browserless] ✅ ChatKitPanel ready");
   } catch (e) {
     // Fallback: just wait a fixed time for React to hydrate
     console.log(
-      "[browserless] Using fallback: waiting 8 seconds for React hydration...",
+      "[browserless] Using fallback: waiting 8 seconds for React hydration..."
     );
     await new Promise((resolve) => setTimeout(resolve, 8000));
 
     // Check if listener is ready
     const isReady = await page.evaluate(
-      () => (window as any).__chatkitReady === true,
+      () => (window as any).__chatkitReady === true
     );
     if (isReady) {
       console.log("[browserless] ✅ ChatKitPanel ready (after fallback)");
     } else {
       console.log(
-        "[browserless] ⚠️  ChatKitPanel may not be ready, proceeding anyway...",
+        "[browserless] ⚠️  ChatKitPanel may not be ready, proceeding anyway..."
       );
     }
   }
@@ -384,7 +384,7 @@ async function getOrCreateBrowserSession(
     getCapturedSSEResponse: () => capturedSSEResponse,
     clearCapturedSSEResponse: () => {
       capturedSSEResponse = null;
-    },
+    }
   };
 
   browserSessions.set(phoneNumber, session);
@@ -395,7 +395,7 @@ async function getOrCreateBrowserSession(
 
 // OCR-based response extraction from screenshot (ULTIMATE FALLBACK)
 async function extractResponseViaOCR(
-  screenshotPath: string,
+  screenshotPath: string
 ): Promise<string | null> {
   try {
     console.log("[ocr-fallback] Attempting OCR extraction from screenshot...");
@@ -403,7 +403,7 @@ async function extractResponseViaOCR(
     const ocrConfig = {
       lang: "eng",
       oem: 1, // LSTM OCR Engine Mode
-      psm: 6, // Assume a single uniform block of text
+      psm: 6 // Assume a single uniform block of text
     };
 
     const text = await tesseract.recognize(screenshotPath, ocrConfig);
@@ -449,7 +449,7 @@ async function extractResponseViaOCR(
       const response = filteredLines.slice(-3).join(" ").trim();
       console.log(
         "[ocr-fallback] ✅ Extracted response:",
-        response.substring(0, 100),
+        response.substring(0, 100)
       );
       return response;
     }
@@ -478,9 +478,9 @@ export async function POST(request: Request) {
           status: 429,
           headers: {
             "Content-Type": "text/xml",
-            "Retry-After": String(rateLimit.retryAfter),
-          },
-        },
+            "Retry-After": String(rateLimit.retryAfter)
+          }
+        }
       );
     }
 
@@ -497,8 +497,8 @@ export async function POST(request: Request) {
         '<?xml version="1.0" encoding="UTF-8"?><Response><Message>Message too long. Please keep under 1600 characters.</Message></Response>',
         {
           status: 400,
-          headers: { "Content-Type": "text/xml" },
-        },
+          headers: { "Content-Type": "text/xml" }
+        }
       );
     }
 
@@ -522,13 +522,13 @@ export async function POST(request: Request) {
         console.log("[browserless-eval] Dispatching incoming-sms event...");
         window.dispatchEvent(
           new CustomEvent("incoming-sms", {
-            detail: { from: phone, message: msg },
-          }),
+            detail: { from: phone, message: msg }
+          })
         );
         console.log("[browserless-eval] Event dispatched");
       },
       message,
-      from,
+      from
     );
 
     console.log("[sms-webhook] Waiting for SSE response (max 30 seconds)...");
@@ -547,7 +547,7 @@ export async function POST(request: Request) {
         response = captured;
         console.log(
           "[sms-webhook] ✅ SSE Response captured:",
-          response.substring(0, 200),
+          response.substring(0, 200)
         );
         break;
       }
@@ -561,15 +561,15 @@ export async function POST(request: Request) {
 
       if (ocrDisabled) {
         console.log(
-          "[sms-webhook] ⚠️  SSE capture timed out and OCR is disabled",
+          "[sms-webhook] ⚠️  SSE capture timed out and OCR is disabled"
         );
         throw new Error(
-          "SSE capture failed and OCR fallback is disabled. Check ChatKit configuration and SSE interception.",
+          "SSE capture failed and OCR fallback is disabled. Check ChatKit configuration and SSE interception."
         );
       }
 
       console.log(
-        "[sms-webhook] ⚠️  SSE capture timed out, attempting OCR fallback...",
+        "[sms-webhook] ⚠️  SSE capture timed out, attempting OCR fallback..."
       );
 
       // Wait a bit more for response to render
@@ -586,7 +586,7 @@ export async function POST(request: Request) {
         captureMethod = "ocr-fallback";
         console.log(
           "[sms-webhook] ✅ ChatKit Response received (OCR):",
-          response.substring(0, 200),
+          response.substring(0, 200)
         );
       } else {
         throw new Error("Both SSE and OCR capture failed");
@@ -600,7 +600,7 @@ export async function POST(request: Request) {
     console.log(
       "[sms-webhook] 🧹 Cleaned response length:",
       response.length,
-      "chars",
+      "chars"
     );
 
     // Take a screenshot for debugging (only if we haven't taken one for OCR)
@@ -629,7 +629,7 @@ export async function POST(request: Request) {
       await twilioClientInstance.messages.create({
         body: response,
         from: twilioPhoneNumber,
-        to: from,
+        to: from
       });
       console.log("[sms-webhook] ✅ SMS sent successfully to:", from);
     } else {
@@ -638,7 +638,7 @@ export async function POST(request: Request) {
       console.log("[sms-webhook]    To:", from);
       console.log("[sms-webhook]    Message:", response);
       console.log(
-        "[sms-webhook] ⚠️  Set real Twilio credentials to send actual SMS",
+        "[sms-webhook] ⚠️  Set real Twilio credentials to send actual SMS"
       );
     }
 
@@ -647,8 +647,8 @@ export async function POST(request: Request) {
       '<?xml version="1.0" encoding="UTF-8"?><Response></Response>',
       {
         status: 200,
-        headers: { "Content-Type": "text/xml" },
-      },
+        headers: { "Content-Type": "text/xml" }
+      }
     );
   } catch (error) {
     console.error("[sms-webhook] ❌ Error:", error);
@@ -675,7 +675,7 @@ export async function GET() {
   return Response.json({
     mode: "browserless-chatkit",
     activeSessions,
-    sessions: Array.from(browserSessions.keys()),
+    sessions: Array.from(browserSessions.keys())
   });
 }
 

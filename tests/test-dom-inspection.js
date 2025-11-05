@@ -27,7 +27,7 @@ async function testDOMInspection() {
   const results = {
     passed: 0,
     failed: 0,
-    tests: [],
+    tests: []
   };
 
   try {
@@ -39,8 +39,8 @@ async function testDOMInspection() {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
+        "--disable-gpu"
+      ]
     };
 
     if (process.platform === "linux" && display) {
@@ -85,7 +85,7 @@ async function testDOMInspection() {
         links: Array.from(document.querySelectorAll("a")).map((a) => a.href),
         paragraphData: document.querySelector('[data-test="paragraph"]')
           ?.dataset?.test,
-        elementCount: document.querySelectorAll("*").length,
+        elementCount: document.querySelectorAll("*").length
       };
     });
 
@@ -133,7 +133,7 @@ async function testDOMInspection() {
         shadowTitle: shadow?.querySelector("h2")?.textContent,
         shadowParagraph: shadow?.querySelector("#shadow-para")?.textContent,
         shadowButton: shadow?.querySelector("#shadow-btn")?.textContent,
-        shadowElementCount: shadow?.querySelectorAll("*").length,
+        shadowElementCount: shadow?.querySelectorAll("*").length
       };
     });
 
@@ -155,7 +155,7 @@ async function testDOMInspection() {
 
     const shadowButtonText = await page.evaluate(
       (btn) => btn.textContent,
-      shadowButton,
+      shadowButton
     );
     console.log(`  ✓ Accessed shadow button directly: "${shadowButtonText}"\n`);
     results.passed++;
@@ -203,8 +203,8 @@ async function testDOMInspection() {
           document.getElementById("new-element").style.backgroundColor,
         listItems: Array.from(document.querySelectorAll("li")).map((li) => ({
           text: li.textContent,
-          index: li.dataset.index,
-        })),
+          index: li.dataset.index
+        }))
       };
     });
 
@@ -213,7 +213,7 @@ async function testDOMInspection() {
     console.log(`  ✓ Element class: ${manipulationResults.elementClass}`);
     console.log(`  ✓ Element style: ${manipulationResults.elementStyle}`);
     console.log(
-      `  ✓ List items created: ${manipulationResults.listItems.length}\n`,
+      `  ✓ List items created: ${manipulationResults.listItems.length}\n`
     );
     results.passed++;
 
@@ -255,7 +255,7 @@ async function testDOMInspection() {
         selectedCountry: document.getElementById("country").value,
         checkboxChecked: document.getElementById("agree").checked,
         selectedRadio: document.querySelector('input[name="option"]:checked')
-          .value,
+          .value
       };
     });
 
@@ -269,7 +269,7 @@ async function testDOMInspection() {
     // Test click event
     await page.click("#test-btn");
     await page.waitForFunction(
-      () => document.getElementById("output").textContent === "Button clicked!",
+      () => document.getElementById("output").textContent === "Button clicked!"
     );
     const outputText = await page.$eval("#output", (el) => el.textContent);
     console.log(`  ✓ Button click event: ${outputText}\n`);
@@ -322,7 +322,7 @@ async function testDOMInspection() {
         buttonFound: !!button,
         nthChildFound: !!nthChild,
         hiddenDisplay: hiddenStyle.display,
-        visibleDisplay: visibleStyle.display,
+        visibleDisplay: visibleStyle.display
       };
     });
 
@@ -381,7 +381,7 @@ async function testDOMInspection() {
         outerTitle,
         hasInnerShadow: !!innerShadow,
         deepContent,
-        deepButton,
+        deepButton
       };
     });
 
@@ -422,7 +422,7 @@ async function testDOMInspection() {
         firstChild: middle.parentElement?.firstElementChild?.id,
         lastChild: middle.parentElement?.lastElementChild?.id,
         childrenCount: middle.parentElement?.children.length,
-        closestParent: middle.closest("#root")?.id,
+        closestParent: middle.closest("#root")?.id
       };
     });
 
@@ -472,14 +472,14 @@ async function testDOMInspection() {
         computedWidth: computed.width,
         computedHeight: computed.height,
         padding: computed.padding,
-        margin: computed.margin,
+        margin: computed.margin
       };
     });
 
     console.log(`  ✓ Width: ${boundingBox.width}px`);
     console.log(`  ✓ Height: ${boundingBox.height}px`);
     console.log(
-      `  ✓ Position (top, left): (${boundingBox.top}px, ${boundingBox.left}px)`,
+      `  ✓ Position (top, left): (${boundingBox.top}px, ${boundingBox.left}px)`
     );
     console.log(`  ✓ Computed width: ${boundingBox.computedWidth}`);
     console.log(`  ✓ Computed height: ${boundingBox.computedHeight}\n`);
@@ -525,7 +525,7 @@ async function testDOMInspection() {
 
     const screenshotPath = path.join(
       __dirname,
-      "test-dom-inspection-screenshot.png",
+      "test-dom-inspection-screenshot.png"
     );
     await page.screenshot({ path: screenshotPath, fullPage: true });
     console.log(`  ✓ Screenshot saved: ${screenshotPath}\n`);
@@ -612,10 +612,10 @@ async function testDOMInspection() {
       }
 
       const messages = Array.from(
-        shadow.querySelectorAll(".chatkit-message") || [],
+        shadow.querySelectorAll(".chatkit-message") || []
       ).map((msg) => ({
         id: msg.dataset.messageId,
-        text: msg.textContent,
+        text: msg.textContent
       }));
 
       const input = shadow.getElementById("chat-input");
@@ -630,7 +630,7 @@ async function testDOMInspection() {
         inputPlaceholder: input?.placeholder,
         buttonText: button?.textContent,
         inputExists: !!input,
-        buttonExists: !!button,
+        buttonExists: !!button
       };
     });
 
@@ -648,15 +648,15 @@ async function testDOMInspection() {
         });
       }
       console.log(
-        `  ✓ Input exists: ${chatkitTest.inputExists} (${chatkitTest.inputPlaceholder})`,
+        `  ✓ Input exists: ${chatkitTest.inputExists} (${chatkitTest.inputPlaceholder})`
       );
       console.log(
-        `  ✓ Button exists: ${chatkitTest.buttonExists} (${chatkitTest.buttonText})\n`,
+        `  ✓ Button exists: ${chatkitTest.buttonExists} (${chatkitTest.buttonText})\n`
       );
 
       const chatkitScreenshot = path.join(
         __dirname,
-        "test-chatkit-widget-screenshot.png",
+        "test-chatkit-widget-screenshot.png"
       );
       await page.screenshot({ path: chatkitScreenshot, fullPage: true });
       console.log(`  ✓ ChatKit screenshot: ${chatkitScreenshot}\n`);
@@ -670,7 +670,7 @@ async function testDOMInspection() {
     console.log(`✅ Passed: ${results.passed}`);
     console.log(`❌ Failed: ${results.failed}`);
     console.log(
-      `📈 Success Rate: ${((results.passed / (results.passed + results.failed)) * 100).toFixed(1)}%\n`,
+      `📈 Success Rate: ${((results.passed / (results.passed + results.failed)) * 100).toFixed(1)}%\n`
     );
 
     console.log("🎉 All DOM inspection tests completed successfully!\n");

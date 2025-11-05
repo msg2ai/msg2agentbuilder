@@ -292,7 +292,7 @@ const isValid = twilio.validateRequest(
   authToken,
   twilioSignature,
   webhookUrl,
-  requestBody,
+  requestBody
 );
 
 if (!isValid) {
@@ -564,7 +564,7 @@ page.on("response", async (response) => {
             console.log(
               "[SSE Intercept] Response captured:",
               textContent.length,
-              "chars",
+              "chars"
             );
           }
         }
@@ -589,7 +589,7 @@ const client = twilio(apiKeySid, apiKeySecret, { accountSid });
 const message = await client.messages.create({
   from: process.env.TWILIO_PHONE_NUMBER,
   to: recipientNumber,
-  body: messageText,
+  body: messageText
 });
 
 console.log("[send-sms] ✅ SMS sent, SID:", message.sid);
@@ -675,7 +675,7 @@ const isNewUser = !browserSessions.has(from);
 if (isNewUser) {
   await sendSMS(
     from,
-    "Welcome to Msg2AgentBuilder! I'm an AI assistant. Ask me anything!",
+    "Welcome to Msg2AgentBuilder! I'm an AI assistant. Ask me anything!"
   );
 }
 ```
@@ -690,7 +690,7 @@ await db.messages.create({
   phone: from,
   direction: "inbound",
   content: body,
-  timestamp: new Date(),
+  timestamp: new Date()
 });
 
 // After sending response
@@ -698,7 +698,7 @@ await db.messages.create({
   phone: from,
   direction: "outbound",
   content: response,
-  timestamp: new Date(),
+  timestamp: new Date()
 });
 ```
 

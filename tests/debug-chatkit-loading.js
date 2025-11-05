@@ -21,8 +21,8 @@ async function debugChatKitLoading() {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
+        "--disable-gpu"
+      ]
     });
 
     const page = await browser.newPage();
@@ -44,7 +44,7 @@ async function debugChatKitLoading() {
           timestamp: Date.now(),
           method: request.method(),
           url,
-          headers: request.headers(),
+          headers: request.headers()
         });
         console.log(`  [Request] ${request.method()} ${url}`);
       }
@@ -62,7 +62,7 @@ async function debugChatKitLoading() {
           url,
           status: response.status(),
           statusText: response.statusText(),
-          headers: response.headers(),
+          headers: response.headers()
         };
 
         // Try to get response body
@@ -73,7 +73,7 @@ async function debugChatKitLoading() {
           } else {
             responseData.bodyPreview = (await response.text()).substring(
               0,
-              200,
+              200
             );
           }
         } catch (e) {
@@ -85,7 +85,7 @@ async function debugChatKitLoading() {
         if (responseData.body) {
           console.log(
             `    Body:`,
-            JSON.stringify(responseData.body).substring(0, 150),
+            JSON.stringify(responseData.body).substring(0, 150)
           );
         }
       }
@@ -125,11 +125,11 @@ async function debugChatKitLoading() {
           return {
             chatkitReady: window.__chatkitReady || false,
             bodyText: (document.body?.textContent || "").substring(0, 150),
-            isLoading: (document.body?.textContent || "").includes("Loading"),
+            isLoading: (document.body?.textContent || "").includes("Loading")
           };
         });
         console.log(
-          `  [${i}s] Ready: ${state.chatkitReady}, Loading: ${state.isLoading}`,
+          `  [${i}s] Ready: ${state.chatkitReady}, Loading: ${state.isLoading}`
         );
       }
     }
@@ -154,7 +154,7 @@ async function debugChatKitLoading() {
         ) {
           errorElements.push({
             tag: el.tagName,
-            text: text.substring(0, 100),
+            text: text.substring(0, 100)
           });
         }
       });
@@ -165,14 +165,14 @@ async function debugChatKitLoading() {
         bodyText: (document.body?.textContent || "").substring(0, 300),
         isLoading: (document.body?.textContent || "").includes("Loading"),
         errorElements: errorElements.slice(0, 5),
-        totalElements: document.querySelectorAll("*").length,
+        totalElements: document.querySelectorAll("*").length
       };
     });
 
     console.log("═══════════════════════════════════════════════════════════");
     console.log("📊 FINAL STATE");
     console.log(
-      "═══════════════════════════════════════════════════════════\n",
+      "═══════════════════════════════════════════════════════════\n"
     );
     console.log(`Title: ${finalState.title}`);
     console.log(`ChatKit Ready: ${finalState.chatkitReady}`);
@@ -191,7 +191,7 @@ async function debugChatKitLoading() {
     console.log("═══════════════════════════════════════════════════════════");
     console.log("🌐 NETWORK ACTIVITY");
     console.log(
-      "═══════════════════════════════════════════════════════════\n",
+      "═══════════════════════════════════════════════════════════\n"
     );
     console.log(`Total Requests: ${requests.length}`);
     console.log(`Total Responses: ${responses.length}\n`);
@@ -210,7 +210,7 @@ async function debugChatKitLoading() {
         console.log(`  ${i + 1}. ${res.status} ${res.url}`);
         if (res.body) {
           console.log(
-            `     Body: ${JSON.stringify(res.body).substring(0, 100)}...`,
+            `     Body: ${JSON.stringify(res.body).substring(0, 100)}...`
           );
         }
       });
@@ -220,7 +220,7 @@ async function debugChatKitLoading() {
     console.log("═══════════════════════════════════════════════════════════");
     console.log("💬 CONSOLE MESSAGES (last 20)");
     console.log(
-      "═══════════════════════════════════════════════════════════\n",
+      "═══════════════════════════════════════════════════════════\n"
     );
     const recentLogs = consoleLogs.slice(-20);
     recentLogs.forEach((log, i) => {
@@ -235,12 +235,12 @@ async function debugChatKitLoading() {
       requests,
       responses,
       consoleLogs: consoleLogs.slice(-50),
-      timestamp: new Date().toISOString(),
+      timestamp: new Date().toISOString()
     };
 
     require("fs").writeFileSync(
       path.join(__dirname, "chatkit-debug-report.json"),
-      JSON.stringify(report, null, 2),
+      JSON.stringify(report, null, 2)
     );
     console.log("📄 Detailed report saved to: chatkit-debug-report.json\n");
   } catch (error) {

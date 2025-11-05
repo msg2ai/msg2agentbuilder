@@ -40,18 +40,18 @@ async function testWorkflow() {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${API_KEY}`,
-          "OpenAI-Beta": "chatkit_beta=v1",
+          "OpenAI-Beta": "chatkit_beta=v1"
         },
         body: JSON.stringify({
           workflow: { id: WORKFLOW_ID },
           user: "test-user-" + Date.now(),
           chatkit_configuration: {
             file_upload: {
-              enabled: true,
-            },
-          },
-        }),
-      },
+              enabled: true
+            }
+          }
+        })
+      }
     );
 
     console.log("Session Response Status:", sessionResponse.status);
@@ -74,7 +74,7 @@ async function testWorkflow() {
     console.log("\n✅ Session created successfully");
     console.log(
       "Client secret received:",
-      sessionData.client_secret.substring(0, 20) + "...",
+      sessionData.client_secret.substring(0, 20) + "..."
     );
 
     // Step 2: Test sending a message
@@ -86,28 +86,28 @@ async function testWorkflow() {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionData.client_secret}`,
-          Accept: "text/event-stream",
+          Accept: "text/event-stream"
         },
         body: JSON.stringify({
           type: "threads.add_user_message",
           params: {
             input: {
               content: [
-                { type: "input_text", text: "Hello, can you hear me?" },
+                { type: "input_text", text: "Hello, can you hear me?" }
               ],
               quoted_text: "",
-              attachments: [],
-            },
-          },
-        }),
-      },
+              attachments: []
+            }
+          }
+        })
+      }
     );
 
     console.log("Message Response Status:", messageResponse.status);
     console.log("Message Response Status Text:", messageResponse.statusText);
     console.log(
       "Message Response Headers:",
-      Object.fromEntries(messageResponse.headers.entries()),
+      Object.fromEntries(messageResponse.headers.entries())
     );
 
     if (!messageResponse.ok) {

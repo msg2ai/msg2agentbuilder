@@ -13,7 +13,7 @@ function getTwilioClient() {
 
     if (!accountSid || !apiKeySid || !apiKeySecret) {
       throw new Error(
-        "Missing Twilio credentials. Required: TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET",
+        "Missing Twilio credentials. Required: TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET"
       );
     }
 
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 
     console.log("[send-sms] Sending SMS:", {
       to,
-      message: message.substring(0, 100),
+      message: message.substring(0, 100)
     });
 
     // Send SMS via Twilio
@@ -37,23 +37,23 @@ export async function POST(request: Request) {
     const result = await client.messages.create({
       body: message,
       to: to,
-      from: process.env.TWILIO_PHONE_NUMBER,
+      from: process.env.TWILIO_PHONE_NUMBER
     });
 
     console.log("[send-sms] ✅ SMS sent successfully, SID:", result.sid);
 
     return Response.json({
       success: true,
-      messageSid: result.sid,
+      messageSid: result.sid
     });
   } catch (error) {
     console.error("[send-sms] ❌ Error sending SMS:", error);
     return Response.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Failed to send SMS",
+        error: error instanceof Error ? error.message : "Failed to send SMS"
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

@@ -29,21 +29,21 @@ async function sendMessage() {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${API_KEY}`,
+      Authorization: `Bearer ${API_KEY}`
     },
     body: JSON.stringify({
       model: "gpt-4o-mini", // Fast and cheap
       messages: [
         {
           role: "system",
-          content: "You are a helpful assistant.",
+          content: "You are a helpful assistant."
         },
         {
           role: "user",
-          content: message,
-        },
-      ],
-    }),
+          content: message
+        }
+      ]
+    })
   });
 
   const data = await response.json();

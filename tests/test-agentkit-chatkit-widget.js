@@ -21,8 +21,8 @@ async function testChatKitWidget() {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
+        "--disable-gpu"
+      ]
     });
 
     const page = await browser.newPage();
@@ -53,7 +53,7 @@ async function testChatKitWidget() {
         iframes: [],
         buttons: [],
         inputs: [],
-        loadingText: null,
+        loadingText: null
       };
 
       // Find all elements
@@ -65,7 +65,7 @@ async function testChatKitWidget() {
           id: el.id || null,
           classes: el.className || null,
           hasShadow: !!el.shadowRoot,
-          text: el.textContent?.trim().substring(0, 50) || null,
+          text: el.textContent?.trim().substring(0, 50) || null
         };
 
         // Check for ChatKit-related attributes or classes
@@ -83,8 +83,8 @@ async function testChatKitWidget() {
             ...info,
             attributes: Array.from(el.attributes || []).map((a) => ({
               name: a.name,
-              value: a.value,
-            })),
+              value: a.value
+            }))
           });
         }
 
@@ -94,7 +94,7 @@ async function testChatKitWidget() {
             host: info,
             shadowHTML: el.shadowRoot.innerHTML?.substring(0, 500),
             shadowChildren: el.shadowRoot.children.length,
-            shadowElements: [],
+            shadowElements: []
           };
 
           // Inspect shadow DOM content
@@ -104,7 +104,7 @@ async function testChatKitWidget() {
               tag: shadowEl.tagName.toLowerCase(),
               id: shadowEl.id || null,
               classes: shadowEl.className || null,
-              text: shadowEl.textContent?.trim().substring(0, 50) || null,
+              text: shadowEl.textContent?.trim().substring(0, 50) || null
             });
           });
 
@@ -117,7 +117,7 @@ async function testChatKitWidget() {
             text: el.textContent?.trim(),
             id: el.id,
             classes: el.className,
-            type: el.type,
+            type: el.type
           });
         }
 
@@ -127,7 +127,7 @@ async function testChatKitWidget() {
             type: el.type,
             id: el.id,
             placeholder: el.placeholder,
-            value: el.value,
+            value: el.value
           });
         }
 
@@ -136,7 +136,7 @@ async function testChatKitWidget() {
           results.iframes.push({
             src: el.src,
             id: el.id,
-            classes: el.className,
+            classes: el.className
           });
         }
       });
@@ -155,8 +155,8 @@ async function testChatKitWidget() {
           (k) =>
             k.toLowerCase().includes("chat") ||
             k.toLowerCase().includes("openai") ||
-            k.toLowerCase().includes("agent"),
-        ),
+            k.toLowerCase().includes("agent")
+        )
       };
 
       return results;
@@ -166,7 +166,7 @@ async function testChatKitWidget() {
     console.log("═══════════════════════════════════════════════════════════");
     console.log("📊 INSPECTION RESULTS");
     console.log(
-      "═══════════════════════════════════════════════════════════\n",
+      "═══════════════════════════════════════════════════════════\n"
     );
 
     console.log(`🕐 Timestamp: ${inspection.timestamp}\n`);
@@ -179,7 +179,7 @@ async function testChatKitWidget() {
     console.log(`  ChatKit defined: ${inspection.windowObjects.hasChatKit}`);
     console.log(`  OpenAI defined: ${inspection.windowObjects.hasOpenAI}`);
     console.log(
-      `  Related globals: ${inspection.windowObjects.allGlobals.join(", ") || "none"}\n`,
+      `  Related globals: ${inspection.windowObjects.allGlobals.join(", ") || "none"}\n`
     );
 
     console.log("🔍 ChatKit-specific Elements:");
@@ -207,13 +207,13 @@ async function testChatKitWidget() {
       inspection.shadowDOMElements.forEach((shadow, i) => {
         console.log(`  Shadow Root ${i + 1}:`);
         console.log(
-          `    Host: <${shadow.host.tag}> ${shadow.host.id ? `id="${shadow.host.id}"` : ""} ${shadow.host.classes ? `class="${shadow.host.classes}"` : ""}`,
+          `    Host: <${shadow.host.tag}> ${shadow.host.id ? `id="${shadow.host.id}"` : ""} ${shadow.host.classes ? `class="${shadow.host.classes}"` : ""}`
         );
         console.log(`    Children: ${shadow.shadowChildren}`);
         console.log(`    Elements inside: ${shadow.shadowElements.length}`);
         if (shadow.shadowHTML) {
           console.log(
-            `    HTML preview: ${shadow.shadowHTML.substring(0, 100)}...`,
+            `    HTML preview: ${shadow.shadowHTML.substring(0, 100)}...`
           );
         }
         if (
@@ -223,7 +223,7 @@ async function testChatKitWidget() {
           console.log(`    Shadow elements:`);
           shadow.shadowElements.forEach((el) => {
             console.log(
-              `      - <${el.tag}> ${el.id ? `id="${el.id}"` : ""} ${el.text ? `"${el.text}"` : ""}`,
+              `      - <${el.tag}> ${el.id ? `id="${el.id}"` : ""} ${el.text ? `"${el.text}"` : ""}`
             );
           });
         }
@@ -231,7 +231,7 @@ async function testChatKitWidget() {
       });
     } else {
       console.log(
-        "  No custom shadow DOM elements found (only Next.js portals)\n",
+        "  No custom shadow DOM elements found (only Next.js portals)\n"
       );
     }
 
@@ -249,7 +249,7 @@ async function testChatKitWidget() {
     if (inspection.inputs.length > 0) {
       inspection.inputs.forEach((input) => {
         console.log(
-          `  - Type: ${input.type}, Placeholder: "${input.placeholder || "none"}" ${input.id ? `(id: ${input.id})` : ""}`,
+          `  - Type: ${input.type}, Placeholder: "${input.placeholder || "none"}" ${input.id ? `(id: ${input.id})` : ""}`
         );
       });
       console.log("");
@@ -278,7 +278,7 @@ async function testChatKitWidget() {
 
       allDivs.forEach((div) => {
         const hasDataProps = Array.from(div.attributes || []).some((attr) =>
-          attr.name.startsWith("data-"),
+          attr.name.startsWith("data-")
         );
 
         const hasReactProps =
@@ -293,10 +293,10 @@ async function testChatKitWidget() {
             classes: div.className,
             attributes: Array.from(div.attributes || []).map((a) => ({
               name: a.name,
-              value: a.value,
+              value: a.value
             })),
             childrenCount: div.children.length,
-            text: div.textContent?.trim().substring(0, 100),
+            text: div.textContent?.trim().substring(0, 100)
           });
         }
       });
@@ -332,11 +332,11 @@ async function testChatKitWidget() {
     // Save detailed results to JSON
     const resultsPath = path.join(
       __dirname,
-      "agentkit-inspection-results.json",
+      "agentkit-inspection-results.json"
     );
     require("fs").writeFileSync(
       resultsPath,
-      JSON.stringify(inspection, null, 2),
+      JSON.stringify(inspection, null, 2)
     );
     console.log(`📄 Detailed results saved to: ${resultsPath}\n`);
   } catch (error) {

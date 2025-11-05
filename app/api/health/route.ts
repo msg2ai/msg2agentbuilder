@@ -9,8 +9,8 @@ export async function GET() {
     {
       status: "ok",
       timestamp: new Date().toISOString(),
-      service: "msg2agentbuilder",
+      service: "msg2agentbuilder"
     },
-    { status: 200 },
+    { status: 200 }
   );
 }

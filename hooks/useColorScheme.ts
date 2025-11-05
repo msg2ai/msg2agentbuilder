@@ -5,7 +5,7 @@ import {
   useEffect,
   useMemo,
   useState,
-  useSyncExternalStore,
+  useSyncExternalStore
 } from "react";
 
 export type ColorScheme = "light" | "dark";
@@ -121,12 +121,12 @@ function useSystemColorScheme(): ColorScheme {
   return useSyncExternalStore(
     subscribeSystem,
     getSystemSnapshot,
-    getServerSnapshot,
+    getServerSnapshot
   );
 }
 
 export function useColorScheme(
-  initialPreference: ColorSchemePreference = "system",
+  initialPreference: ColorSchemePreference = "system"
 ): UseColorSchemeResult {
   const systemScheme = useSystemColorScheme();
 
@@ -136,12 +136,12 @@ export function useColorScheme(
         return initialPreference;
       }
       return readStoredPreference() ?? initialPreference;
-    },
+    }
   );
 
   const scheme = useMemo<ColorScheme>(
     () => (preference === "system" ? systemScheme : preference),
-    [preference, systemScheme],
+    [preference, systemScheme]
   );
 
   useEffect(() => {
@@ -188,6 +188,6 @@ export function useColorScheme(
     preference,
     setScheme,
     setPreference,
-    resetPreference,
+    resetPreference
   };
 }

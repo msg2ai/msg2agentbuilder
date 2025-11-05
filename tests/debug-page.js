@@ -13,8 +13,8 @@ async function debug() {
         "--no-sandbox",
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
-        "--disable-gpu",
-      ],
+        "--disable-gpu"
+      ]
     });
 
     const page = await browser.newPage();
@@ -32,7 +32,7 @@ async function debug() {
     console.log("Navigating to http://localhost:3001...\n");
     await page.goto("http://localhost:3001", {
       waitUntil: "networkidle2",
-      timeout: 30000,
+      timeout: 30000
     });
 
     console.log("✅ Page loaded\n");
@@ -42,14 +42,14 @@ async function debug() {
       return {
         hasChatkit: typeof window.chatkit !== "undefined",
         windowKeys: Object.keys(window).filter(
-          (k) => k.includes("chat") || k.includes("Chat"),
+          (k) => k.includes("chat") || k.includes("Chat")
         ),
         title: document.title,
         bodyText: document.body
           ? document.body.innerText.substring(0, 500)
           : "No body",
         hasReact: typeof window.React !== "undefined",
-        hasNext: typeof window.next !== "undefined",
+        hasNext: typeof window.next !== "undefined"
       };
     });
 
@@ -63,8 +63,8 @@ async function debug() {
       return {
         hasChatkit: typeof window.chatkit !== "undefined",
         windowKeys: Object.keys(window).filter(
-          (k) => k.includes("chat") || k.includes("Chat"),
-        ),
+          (k) => k.includes("chat") || k.includes("Chat")
+        )
       };
     });
 
