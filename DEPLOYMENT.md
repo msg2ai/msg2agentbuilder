@@ -147,6 +147,7 @@ ngrok http 3001
 Replace `3001` with the actual port your dev server is using.
 
 You'll see output like:
+
 ```
 Forwarding    https://abc123def456.ngrok-free.app -> http://localhost:3001
 ```
@@ -177,6 +178,7 @@ npm run dev
 ```
 
 **Important Notes:**
+
 - Access your application via the **ngrok URL** (not localhost)
 - ngrok URLs change each time you restart ngrok (free plan)
 - You'll need to update the domain in OpenAI's allowlist when the ngrok URL changes
@@ -242,11 +244,13 @@ abc123def456   chatkit-app-virtual...   Up 2 minutes   0.0.0.0:3003->3000/tcp, 0
 #### Local Access (localhost only):
 
 **Web Interface:**
+
 ```
 http://localhost:3003
 ```
 
 **VNC Interface:**
+
 ```
 vnc://localhost:5900
 Password: password
@@ -271,6 +275,7 @@ ngrok http 3003
 ```
 
 You'll see output like:
+
 ```
 Forwarding    https://abc123def456.ngrok-free.app -> http://localhost:3003
 ```
@@ -303,6 +308,7 @@ https://abc123def456.ngrok-free.app
 ```
 
 Now you have:
+
 - ✅ Full ChatKit functionality (via ngrok URL)
 - ✅ VNC access to watch browser automation (`vnc://localhost:5900`)
 - ✅ Local HTTP access for debugging (`http://localhost:3003`)
@@ -413,6 +419,87 @@ pkill ngrok
 
 # Rebuild after code changes
 docker-compose -f docker-compose.virtual-display.yml up -d --build
+```
+
+### Troubleshooting Docker Deployment
+
+#### Environment Variables Not Loading
+
+**Problem**: Changes to `.env.local` are not reflected in the running container.
+
+**Solution**: The Docker Compose configuration uses `env_file: .env.local` to automatically load environment variables. However, changes require **recreating** the container (not just restarting):
+
+```bash
+# Stop and recreate container (picks up new .env.local values)
+docker-compose -f docker-compose.virtual-display.yml down
+docker-compose -f docker-compose.virtual-display.yml up -d
+```
+
+**Verify environment variables are loaded correctly**:
+
+```bash
+# Check specific variable
+docker exec msg2agentbuilder-app-virtual-display-1 printenv TWILIO_PHONE_NUMBER
+
+# Check all Twilio variables
+docker exec msg2agentbuilder-app-virtual-display-1 printenv | grep TWILIO
+```
+
+#### Twilio SMS Not Sending
+
+**Problem**: SMS responses are captured but not sent to users.
+
+**Common Causes**:
+
+1. **Wrong Phone Number**: Verify you're using a phone number that exists in your Twilio account:
+
+```bash
+# List all phone numbers in your Twilio account
+curl -X GET "https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/IncomingPhoneNumbers.json" \
+  -u "YOUR_API_KEY_SID:YOUR_API_KEY_SECRET"
+```
+
+2. **Phone Number Mismatch**: Ensure `.env.local` has the exact phone number from your Twilio account (including country code):
+
+```bash
+# Check what's in .env.local
+grep TWILIO_PHONE_NUMBER .env.local
+
+# Example: TWILIO_PHONE_NUMBER=+19803971525
+```
+
+3. **Verify in Container**:
+
+```bash
+# Verify correct number is loaded in running container
+docker exec msg2agentbuilder-app-virtual-display-1 printenv TWILIO_PHONE_NUMBER
+```
+
+If the number is wrong, update `.env.local` and recreate the container.
+
+#### OCR Fallback Capturing Sensitive Data
+
+**Problem**: OCR fallback is reading API keys or other sensitive information from the screen.
+
+**Solution**: Disable OCR fallback by setting in `.env.local`:
+
+```bash
+DISABLE_OCR_FALLBACK=true
+```
+
+This forces the system to use only SSE (Server-Sent Events) capture, which is more reliable and doesn't read from screenshots. If SSE fails, you'll get a clear error message instead of incorrect OCR results.
+
+#### Checking Logs for Errors
+
+```bash
+# Follow logs in real-time
+docker logs -f msg2agentbuilder-app-virtual-display-1
+
+# Filter for SMS-related logs
+docker logs msg2agentbuilder-app-virtual-display-1 --tail 100 | grep -i sms
+
+# Filter for errors
+docker logs msg2agentbuilder-app-virtual-display-1 --tail 100 | grep -i error
 ```
 
 ---
@@ -528,6 +615,7 @@ The easiest way to deploy is using the provided deployment scripts. They automat
 **Build Time**: 10-15 minutes (first deployment)
 
 These scripts will:
+
 1. Load environment variables from `.env.local`
 2. Build and deploy your application to Cloud Run
 3. Configure all necessary settings automatically
@@ -633,11 +721,11 @@ https://YOUR_SERVICE_URL.run.app/api/sms-webhook
 
 #### OpenAI Configuration
 
-| Variable                          | Description               | Example              | Required For    |
-| --------------------------------- | ------------------------- | -------------------- | --------------- |
-| `OPENAI_API_KEY`                  | OpenAI API key            | `sk-proj-abc123...`  | All deployments |
-| `NEXT_PUBLIC_WORKFLOW_ID` | Agent Builder workflow ID | `wf_68ee55e3fb...`   | All deployments |
-| `NEXT_PUBLIC_CHATKIT_DOMAIN_KEY`  | ChatKit domain key        | `domain_pk_68f03...` | All deployments |
+| Variable                         | Description               | Example              | Required For    |
+| -------------------------------- | ------------------------- | -------------------- | --------------- |
+| `OPENAI_API_KEY`                 | OpenAI API key            | `sk-proj-abc123...`  | All deployments |
+| `NEXT_PUBLIC_WORKFLOW_ID`        | Agent Builder workflow ID | `wf_68ee55e3fb...`   | All deployments |
+| `NEXT_PUBLIC_CHATKIT_DOMAIN_KEY` | ChatKit domain key        | `domain_pk_68f03...` | All deployments |
 
 **Getting these values**:
 
@@ -659,6 +747,7 @@ The domain key authenticates your domain with OpenAI's ChatKit service. Follow t
 5. Copy this domain key to your `.env.local` file as `NEXT_PUBLIC_CHATKIT_DOMAIN_KEY`
 
 **Important Notes:**
+
 - ⚠️ **`localhost` is NOT accepted** by OpenAI's domain allowlist - you must use ngrok or deploy to Cloud Run
 - You will need separate domain keys for local development (ngrok) and production (Cloud Run)
 - Domain keys are public and safe to include in client-side code
@@ -667,12 +756,12 @@ The domain key authenticates your domain with OpenAI's ChatKit service. Follow t
 
 #### Twilio Configuration
 
-| Variable                  | Description                              | Example         | Required For    |
-| ------------------------- | ---------------------------------------- | --------------- | --------------- |
-| `TWILIO_ACCOUNT_SID`      | Twilio account identifier                | `ACxxxxxxxx...` | SMS integration |
-| `TWILIO_API_KEY_SID`      | Twilio API Key SID                       | `SKxxxxxxxx...` | SMS integration |
-| `TWILIO_API_KEY_SECRET`   | Twilio API Key Secret                    | `abc123...`     | SMS integration |
-| `TWILIO_PHONE_NUMBER`     | Twilio phone number (E.164 format)       | `+1234567890`   | SMS integration |
+| Variable                | Description                        | Example         | Required For    |
+| ----------------------- | ---------------------------------- | --------------- | --------------- |
+| `TWILIO_ACCOUNT_SID`    | Twilio account identifier          | `ACxxxxxxxx...` | SMS integration |
+| `TWILIO_API_KEY_SID`    | Twilio API Key SID                 | `SKxxxxxxxx...` | SMS integration |
+| `TWILIO_API_KEY_SECRET` | Twilio API Key Secret              | `abc123...`     | SMS integration |
+| `TWILIO_PHONE_NUMBER`   | Twilio phone number (E.164 format) | `+1234567890`   | SMS integration |
 
 **Getting these values**:
 

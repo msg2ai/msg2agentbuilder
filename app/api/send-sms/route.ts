@@ -13,7 +13,7 @@ function getTwilioClient() {
 
     if (!accountSid || !apiKeySid || !apiKeySecret) {
       throw new Error(
-        "Missing Twilio credentials. Required: TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET"
+        "Missing Twilio credentials. Required: TWILIO_ACCOUNT_SID, TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET",
       );
     }
 
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
         success: false,
         error: error instanceof Error ? error.message : "Failed to send SMS",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

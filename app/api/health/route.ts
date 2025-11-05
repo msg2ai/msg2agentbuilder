@@ -11,6 +11,6 @@ export async function GET() {
       timestamp: new Date().toISOString(),
       service: "msg2agentbuilder",
     },
-    { status: 200 }
+    { status: 200 },
   );
 }

@@ -73,7 +73,7 @@ async function debugChatKitLoading() {
           } else {
             responseData.bodyPreview = (await response.text()).substring(
               0,
-              200
+              200,
             );
           }
         } catch (e) {
@@ -85,7 +85,7 @@ async function debugChatKitLoading() {
         if (responseData.body) {
           console.log(
             `    Body:`,
-            JSON.stringify(responseData.body).substring(0, 150)
+            JSON.stringify(responseData.body).substring(0, 150),
           );
         }
       }
@@ -129,7 +129,7 @@ async function debugChatKitLoading() {
           };
         });
         console.log(
-          `  [${i}s] Ready: ${state.chatkitReady}, Loading: ${state.isLoading}`
+          `  [${i}s] Ready: ${state.chatkitReady}, Loading: ${state.isLoading}`,
         );
       }
     }
@@ -172,7 +172,7 @@ async function debugChatKitLoading() {
     console.log("═══════════════════════════════════════════════════════════");
     console.log("📊 FINAL STATE");
     console.log(
-      "═══════════════════════════════════════════════════════════\n"
+      "═══════════════════════════════════════════════════════════\n",
     );
     console.log(`Title: ${finalState.title}`);
     console.log(`ChatKit Ready: ${finalState.chatkitReady}`);
@@ -191,7 +191,7 @@ async function debugChatKitLoading() {
     console.log("═══════════════════════════════════════════════════════════");
     console.log("🌐 NETWORK ACTIVITY");
     console.log(
-      "═══════════════════════════════════════════════════════════\n"
+      "═══════════════════════════════════════════════════════════\n",
     );
     console.log(`Total Requests: ${requests.length}`);
     console.log(`Total Responses: ${responses.length}\n`);
@@ -210,7 +210,7 @@ async function debugChatKitLoading() {
         console.log(`  ${i + 1}. ${res.status} ${res.url}`);
         if (res.body) {
           console.log(
-            `     Body: ${JSON.stringify(res.body).substring(0, 100)}...`
+            `     Body: ${JSON.stringify(res.body).substring(0, 100)}...`,
           );
         }
       });
@@ -220,7 +220,7 @@ async function debugChatKitLoading() {
     console.log("═══════════════════════════════════════════════════════════");
     console.log("💬 CONSOLE MESSAGES (last 20)");
     console.log(
-      "═══════════════════════════════════════════════════════════\n"
+      "═══════════════════════════════════════════════════════════\n",
     );
     const recentLogs = consoleLogs.slice(-20);
     recentLogs.forEach((log, i) => {
@@ -240,7 +240,7 @@ async function debugChatKitLoading() {
 
     require("fs").writeFileSync(
       path.join(__dirname, "chatkit-debug-report.json"),
-      JSON.stringify(report, null, 2)
+      JSON.stringify(report, null, 2),
     );
     console.log("📄 Detailed report saved to: chatkit-debug-report.json\n");
   } catch (error) {

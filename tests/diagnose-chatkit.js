@@ -28,7 +28,7 @@ async function diagnose() {
   console.log("  API Key prefix:", API_KEY?.substring(0, 15) + "...");
   console.log(
     "  API Key type:",
-    API_KEY?.startsWith("sk-proj-") ? "Project Key" : "Unknown"
+    API_KEY?.startsWith("sk-proj-") ? "Project Key" : "Unknown",
   );
   console.log("");
 
@@ -56,7 +56,7 @@ async function diagnose() {
             file_upload: { enabled: true },
           },
         }),
-      }
+      },
     );
 
     const sessionData = await sessionResponse.json();
@@ -64,7 +64,7 @@ async function diagnose() {
     console.log(
       "  Status:",
       sessionResponse.status,
-      sessionResponse.statusText
+      sessionResponse.statusText,
     );
 
     if (!sessionResponse.ok) {
@@ -74,7 +74,7 @@ async function diagnose() {
       // Common error checks
       if (sessionData.error?.message?.includes("workflow")) {
         console.error(
-          "\n  💡 LIKELY ISSUE: Workflow not found or not published"
+          "\n  💡 LIKELY ISSUE: Workflow not found or not published",
         );
         console.error("     → Go to https://platform.openai.com/agent-builder");
         console.error('     → Find your workflow and click "Publish"');
@@ -85,16 +85,16 @@ async function diagnose() {
         sessionData.error?.message?.includes("project")
       ) {
         console.error(
-          "\n  💡 LIKELY ISSUE: API key and workflow are in different org/project"
+          "\n  💡 LIKELY ISSUE: API key and workflow are in different org/project",
         );
         console.error(
-          "     → Ensure API key and workflow are in the same OpenAI project"
+          "     → Ensure API key and workflow are in the same OpenAI project",
         );
       }
       if (sessionData.error?.code === "invalid_api_key") {
         console.error("\n  💡 LIKELY ISSUE: Invalid or expired API key");
         console.error(
-          "     → Generate a new API key from https://platform.openai.com/api-keys"
+          "     → Generate a new API key from https://platform.openai.com/api-keys",
         );
       }
 
@@ -105,7 +105,7 @@ async function diagnose() {
     console.log("  Session ID:", sessionData.id);
     console.log(
       "  Client secret prefix:",
-      sessionData.client_secret?.substring(0, 20) + "..."
+      sessionData.client_secret?.substring(0, 20) + "...",
     );
     console.log("  Workflow ID:", sessionData.workflow?.id);
     console.log("  User:", sessionData.user);
@@ -137,17 +137,17 @@ async function diagnose() {
             },
           },
         }),
-      }
+      },
     );
 
     console.log(
       "  Status:",
       conversationResponse.status,
-      conversationResponse.statusText
+      conversationResponse.statusText,
     );
     console.log(
       "  Content-Type:",
-      conversationResponse.headers.get("content-type")
+      conversationResponse.headers.get("content-type"),
     );
 
     if (!conversationResponse.ok) {
@@ -178,10 +178,10 @@ async function diagnose() {
       console.error("");
       console.error("  💡 LIKELY ISSUES:");
       console.error(
-        "     1. API key doesn't have ChatKit access in this organization"
+        "     1. API key doesn't have ChatKit access in this organization",
       );
       console.error(
-        "     2. Workflow is in a different project than the API key"
+        "     2. Workflow is in a different project than the API key",
       );
       console.error("     3. Workflow is not properly published");
       console.error("");

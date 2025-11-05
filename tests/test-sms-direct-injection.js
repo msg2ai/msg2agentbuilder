@@ -12,7 +12,7 @@ const path = require("path");
 async function testDirectSMSInjection() {
   console.log("💬 Direct SMS Injection Test\n");
   console.log(
-    "This will inject SMS directly into the ChatKit UI you can see\n"
+    "This will inject SMS directly into the ChatKit UI you can see\n",
   );
   console.log("═══════════════════════════════════════════════════════════\n");
 
@@ -62,7 +62,7 @@ async function testDirectSMSInjection() {
       () => {
         return window.__chatkitReady === true;
       },
-      { timeout: 45000 }
+      { timeout: 45000 },
     );
 
     console.log("✅ ChatKit is ready!\n");
@@ -75,7 +75,7 @@ async function testDirectSMSInjection() {
     console.log("═══════════════════════════════════════════════════════════");
     console.log("⏱️  WATCH THE BROWSER WINDOW NOW");
     console.log(
-      "═══════════════════════════════════════════════════════════\n"
+      "═══════════════════════════════════════════════════════════\n",
     );
 
     // Wait 3 seconds so you can see the initial state
@@ -111,7 +111,7 @@ async function testDirectSMSInjection() {
     await page.evaluate((msg) => {
       console.log(
         "[INJECTION] Dispatching incoming-sms event with message:",
-        msg
+        msg,
       );
       window.dispatchEvent(
         new CustomEvent("incoming-sms", {
@@ -119,7 +119,7 @@ async function testDirectSMSInjection() {
             from: "+15551234567",
             message: msg,
           },
-        })
+        }),
       );
       console.log("[INJECTION] Event dispatched!");
     }, testMessage);
@@ -149,7 +149,7 @@ async function testDirectSMSInjection() {
         if (secondsPassed === 10 || secondsPassed === 20) {
           const progressScreenshot = path.join(
             __dirname,
-            `sms-direct-3-progress-${secondsPassed}s.png`
+            `sms-direct-3-progress-${secondsPassed}s.png`,
           );
           await page.screenshot({ path: progressScreenshot, fullPage: true });
           console.log(`  📸 Progress: ${progressScreenshot}`);
@@ -162,7 +162,7 @@ async function testDirectSMSInjection() {
     clearInterval(progressInterval);
 
     console.log(
-      "\n═══════════════════════════════════════════════════════════"
+      "\n═══════════════════════════════════════════════════════════",
     );
 
     if (result.success) {
@@ -182,7 +182,7 @@ async function testDirectSMSInjection() {
     // Take final screenshot showing the complete conversation
     const screenshot4 = path.join(
       __dirname,
-      "sms-direct-4-final-conversation.png"
+      "sms-direct-4-final-conversation.png",
     );
     await page.screenshot({ path: screenshot4, fullPage: true });
     console.log(`📸 4. Final conversation: ${screenshot4}\n`);
@@ -209,35 +209,35 @@ async function testDirectSMSInjection() {
     console.log(`  Response captured: ${finalState.hasResponse}`);
     console.log(`  Response length: ${finalState.responseLength} chars`);
     console.log(
-      `  Body preview: "${finalState.bodyPreview.substring(0, 150)}..."\n`
+      `  Body preview: "${finalState.bodyPreview.substring(0, 150)}..."\n`,
     );
 
     console.log("═══════════════════════════════════════════════════════════");
     console.log("📸 SCREENSHOTS GENERATED:");
     console.log(
-      "═══════════════════════════════════════════════════════════\n"
+      "═══════════════════════════════════════════════════════════\n",
     );
     console.log(
-      "  1. sms-direct-1-initial.png         - Initial ChatKit state"
+      "  1. sms-direct-1-initial.png         - Initial ChatKit state",
     );
     console.log("  2. sms-direct-2-message-sent.png    - After user message");
     console.log("  3. sms-direct-3-progress-*.png      - During processing");
     console.log(
-      "  4. sms-direct-4-final-conversation.png - Complete conversation\n"
+      "  4. sms-direct-4-final-conversation.png - Complete conversation\n",
     );
 
     console.log("═══════════════════════════════════════════════════════════");
     console.log(
-      result.success ? "✅ TEST PASSED!" : "⚠️  TEST COMPLETED (partial)"
+      result.success ? "✅ TEST PASSED!" : "⚠️  TEST COMPLETED (partial)",
     );
     console.log(
-      "═══════════════════════════════════════════════════════════\n"
+      "═══════════════════════════════════════════════════════════\n",
     );
 
     // Keep browser open for 30 seconds so you can see the result
     console.log("🔍 Browser will stay open for 30 seconds for inspection...\n");
     console.log(
-      "   Look at the browser window to see the full conversation!\n"
+      "   Look at the browser window to see the full conversation!\n",
     );
     await new Promise((resolve) => setTimeout(resolve, 30000));
   } catch (error) {
@@ -246,7 +246,7 @@ async function testDirectSMSInjection() {
 
     // Keep browser open on error
     console.log(
-      "\n⚠️  Error occurred. Browser will stay open for 60 seconds...\n"
+      "\n⚠️  Error occurred. Browser will stay open for 60 seconds...\n",
     );
     await new Promise((resolve) => setTimeout(resolve, 60000));
 

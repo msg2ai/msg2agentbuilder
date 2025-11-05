@@ -117,14 +117,14 @@ async function testVirtualDisplay() {
 
     console.log(
       "  Shadow DOM Test:",
-      shadowTest.shadowDOMExists ? "✅ Passed" : "❌ Failed"
+      shadowTest.shadowDOMExists ? "✅ Passed" : "❌ Failed",
     );
     console.log("  Output:", shadowTest.outputText);
 
     // Save ChatKit test screenshot
     const chatkitScreenshot = path.join(
       __dirname,
-      "test-chatkit-screenshot.png"
+      "test-chatkit-screenshot.png",
     );
     await page.screenshot({ path: chatkitScreenshot, fullPage: true });
     console.log(`  Screenshot: ${chatkitScreenshot}\n`);

@@ -4,7 +4,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Msg2AgentBuilder",
-  description: "SMS to AI Bridge - Connect Twilio SMS with OpenAI Agent Builder workflows for intelligent conversational AI via text messaging",
+  description:
+    "SMS to AI Bridge - Connect Twilio SMS with OpenAI Agent Builder workflows for intelligent conversational AI via text messaging",
 };
 
 export default function RootLayout({

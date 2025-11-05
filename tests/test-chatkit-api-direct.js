@@ -16,11 +16,11 @@ console.log("");
 // Check environment variables
 console.log("📋 Step 1: Environment Variables Check");
 console.log(
-  `   OPENAI_API_KEY: ${OPENAI_API_KEY ? `${OPENAI_API_KEY.substring(0, 20)}...` : "MISSING"}`
+  `   OPENAI_API_KEY: ${OPENAI_API_KEY ? `${OPENAI_API_KEY.substring(0, 20)}...` : "MISSING"}`,
 );
 console.log(`   WORKFLOW_ID: ${WORKFLOW_ID || "MISSING"}`);
 console.log(
-  `   DOMAIN_KEY: ${DOMAIN_KEY ? `${DOMAIN_KEY.substring(0, 20)}...` : "MISSING"}`
+  `   DOMAIN_KEY: ${DOMAIN_KEY ? `${DOMAIN_KEY.substring(0, 20)}...` : "MISSING"}`,
 );
 console.log("");
 
@@ -83,7 +83,7 @@ async function testChatKitAPI() {
           console.log("🎉 ChatKit API is working correctly!");
           console.log(
             "   Client secret received:",
-            data.client_secret.substring(0, 20) + "..."
+            data.client_secret.substring(0, 20) + "...",
           );
         }
       } catch (e) {
@@ -164,7 +164,7 @@ async function testNetworkConnectivity() {
     });
 
     console.log(
-      `   OpenAI API reachable: ${testResponse.ok ? "✅ YES" : "❌ NO"}`
+      `   OpenAI API reachable: ${testResponse.ok ? "✅ YES" : "❌ NO"}`,
     );
     console.log(`   Status: ${testResponse.status}`);
   } catch (error) {

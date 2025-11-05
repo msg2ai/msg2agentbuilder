@@ -52,19 +52,17 @@ async function test() {
       console.log("   Control API:", chatkitInfo.hasControl ? "✅" : "❌");
       console.log(
         "   sendMessage():",
-        chatkitInfo.hasSendMessage ? "✅" : "❌"
+        chatkitInfo.hasSendMessage ? "✅" : "❌",
       );
       console.log("");
     } else {
       console.log("❌ ChatKit not found on the page\n");
       console.log("Troubleshooting:");
       console.log(
-        "- Is http://localhost:3000 showing the ChatKit UI in a browser?"
+        "- Is http://localhost:3000 showing the ChatKit UI in a browser?",
       );
       console.log("- Check browser console for errors");
-      console.log(
-        "- Make sure NEXT_PUBLIC_WORKFLOW_ID is set in .env.local"
-      );
+      console.log("- Make sure NEXT_PUBLIC_WORKFLOW_ID is set in .env.local");
     }
 
     await browser.close();
@@ -80,7 +78,7 @@ async function test() {
       console.log("\nTroubleshooting:");
       console.log("- Install Chromium: brew install chromium");
       console.log(
-        "- Or let Puppeteer download it: npx puppeteer browsers install chrome"
+        "- Or let Puppeteer download it: npx puppeteer browsers install chrome",
       );
     }
   }

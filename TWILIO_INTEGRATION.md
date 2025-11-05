@@ -277,9 +277,9 @@ For production deployments, you can enhance security by implementing Twilio webh
 **Implementation Example:**
 
 ```typescript
-import twilio from 'twilio';
+import twilio from "twilio";
 
-const twilioSignature = request.headers.get('X-Twilio-Signature');
+const twilioSignature = request.headers.get("X-Twilio-Signature");
 const webhookUrl = `${process.env.APP_URL}/api/sms-webhook`;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 
@@ -292,11 +292,11 @@ const isValid = twilio.validateRequest(
   authToken,
   twilioSignature,
   webhookUrl,
-  requestBody
+  requestBody,
 );
 
 if (!isValid) {
-  return new Response('Forbidden', { status: 403 });
+  return new Response("Forbidden", { status: 403 });
 }
 ```
 
@@ -564,7 +564,7 @@ page.on("response", async (response) => {
             console.log(
               "[SSE Intercept] Response captured:",
               textContent.length,
-              "chars"
+              "chars",
             );
           }
         }
@@ -675,7 +675,7 @@ const isNewUser = !browserSessions.has(from);
 if (isNewUser) {
   await sendSMS(
     from,
-    "Welcome to Msg2AgentBuilder! I'm an AI assistant. Ask me anything!"
+    "Welcome to Msg2AgentBuilder! I'm an AI assistant. Ask me anything!",
   );
 }
 ```

@@ -59,22 +59,22 @@ export function ChatKitPanel({
   >(() =>
     isBrowser && window.customElements?.get("openai-chatkit")
       ? "ready"
-      : "pending"
+      : "pending",
   );
   const [widgetInstanceKey, setWidgetInstanceKey] = useState(0);
   const processedSmsIds = useRef(new Set<string>());
   const currentSmsNumber = useRef<string | null>(null);
   const currentResponseText = useRef<string>("");
   const [displayPhoneNumber, setDisplayPhoneNumber] = useState<string | null>(
-    null
+    null,
   );
 
   // Session-based workflow ID state
   const [sessionWorkflowId, setSessionWorkflowId] = useState<string>(
-    () => WORKFLOW_ID
+    () => WORKFLOW_ID,
   );
   const [workflowInputValue, setWorkflowInputValue] = useState<string>(
-    () => WORKFLOW_ID
+    () => WORKFLOW_ID,
   );
   const [showWorkflowConfirmation, setShowWorkflowConfirmation] =
     useState(false);
@@ -143,7 +143,7 @@ export function ChatKitPanel({
                   console.log(
                     "[SSE Intercept] ✅ Stream complete. Total text:",
                     accumulatedText.length,
-                    "chars"
+                    "chars",
                   );
                   break;
                 }
@@ -164,7 +164,7 @@ export function ChatKitPanel({
                       if (isDev) {
                         console.log(
                           "[SSE Intercept] 🔍 Raw SSE data:",
-                          JSON.stringify(parsed).substring(0, 200)
+                          JSON.stringify(parsed).substring(0, 200),
                         );
                       }
 
@@ -226,7 +226,7 @@ export function ChatKitPanel({
                       if (content) {
                         console.log(
                           "[SSE Intercept] 📝 Content chunk:",
-                          content.substring(0, 100)
+                          content.substring(0, 100),
                         );
 
                         // Update current response and window
@@ -239,7 +239,7 @@ export function ChatKitPanel({
                       if (isDev) {
                         console.log(
                           "[SSE Intercept] ⚠️ Failed to parse SSE line:",
-                          dataStr.substring(0, 100)
+                          dataStr.substring(0, 100),
                         );
                       }
                     }
@@ -294,7 +294,7 @@ export function ChatKitPanel({
     window.addEventListener("chatkit-script-loaded", handleLoaded);
     window.addEventListener(
       "chatkit-script-error",
-      handleError as EventListener
+      handleError as EventListener,
     );
 
     if (window.customElements?.get("openai-chatkit")) {
@@ -306,7 +306,7 @@ export function ChatKitPanel({
             new CustomEvent("chatkit-script-error", {
               detail:
                 "ChatKit web component is unavailable. Verify that the script URL is reachable.",
-            })
+            }),
           );
         }
       }, 5000);
@@ -316,7 +316,7 @@ export function ChatKitPanel({
       window.removeEventListener("chatkit-script-loaded", handleLoaded);
       window.removeEventListener(
         "chatkit-script-error",
-        handleError as EventListener
+        handleError as EventListener,
       );
       if (timeoutId) {
         window.clearTimeout(timeoutId);
@@ -325,7 +325,7 @@ export function ChatKitPanel({
   }, [scriptStatus, setErrorState]);
 
   const isWorkflowConfigured = Boolean(
-    sessionWorkflowId && !sessionWorkflowId.startsWith("wf_replace")
+    sessionWorkflowId && !sessionWorkflowId.startsWith("wf_replace"),
   );
 
   useEffect(() => {
@@ -342,7 +342,7 @@ export function ChatKitPanel({
     processedFacts.current.clear();
     if (isBrowser) {
       setScriptStatus(
-        window.customElements?.get("openai-chatkit") ? "ready" : "pending"
+        window.customElements?.get("openai-chatkit") ? "ready" : "pending",
       );
     }
     setIsInitializingSession(true);
@@ -371,7 +371,7 @@ export function ChatKitPanel({
 
       // ChatKit renders content inside an iframe within the Shadow DOM
       const iframe = chatkitElement.shadowRoot.querySelector(
-        "iframe.ck-iframe"
+        "iframe.ck-iframe",
       ) as HTMLIFrameElement;
 
       if (!iframe) {
@@ -388,7 +388,7 @@ export function ChatKitPanel({
             console.log(
               "[ChatKitPanel] ⏳ Waiting for iframe to load...",
               iframeAccessAttempts,
-              "attempts"
+              "attempts",
             );
           }
           return;
@@ -442,11 +442,11 @@ export function ChatKitPanel({
                     "[ChatKitPanel] 📝 DOM extracted response (selector:",
                     selector + "):",
                     text.length,
-                    "chars"
+                    "chars",
                   );
                   console.log(
                     "[ChatKitPanel] Preview:",
-                    text.substring(0, 100) + "..."
+                    text.substring(0, 100) + "...",
                   );
                 }
                 return; // Found it, exit
@@ -485,7 +485,7 @@ export function ChatKitPanel({
               // Get the longest substantive line (likely the response)
               const longestLine = lines.reduce(
                 (a, b) => (a.length > b.length ? a : b),
-                ""
+                "",
               );
 
               if (
@@ -498,11 +498,11 @@ export function ChatKitPanel({
                 console.log(
                   "[ChatKitPanel] 📝 Extracted via text filtering:",
                   longestLine.length,
-                  "chars"
+                  "chars",
                 );
                 console.log(
                   "[ChatKitPanel] Preview:",
-                  longestLine.substring(0, 100)
+                  longestLine.substring(0, 100),
                 );
               }
             }
@@ -515,7 +515,7 @@ export function ChatKitPanel({
         if (iframeAccessAttempts === 0) {
           console.error(
             "[ChatKitPanel] ❌ Cannot access iframe content:",
-            error
+            error,
           );
         }
         iframeAccessAttempts++;
@@ -599,7 +599,7 @@ export function ChatKitPanel({
           } catch (parseError) {
             console.error(
               "Failed to parse create-session response",
-              parseError
+              parseError,
             );
           }
         }
@@ -619,11 +619,11 @@ export function ChatKitPanel({
         }
 
         console.log(
-          "[ChatKitPanel] ========== Session created successfully =========="
+          "[ChatKitPanel] ========== Session created successfully ==========",
         );
         console.log(
           "[ChatKitPanel] Client secret received:",
-          clientSecret.substring(0, 20) + "..."
+          clientSecret.substring(0, 20) + "...",
         );
         console.log("[ChatKitPanel] Session ready for messages");
 
@@ -648,7 +648,7 @@ export function ChatKitPanel({
         }
       }
     },
-    [isWorkflowConfigured, sessionWorkflowId, apiKey, setErrorState]
+    [isWorkflowConfigured, sessionWorkflowId, apiKey, setErrorState],
   );
 
   const chatkit = useChatKit({
@@ -708,15 +708,15 @@ export function ChatKitPanel({
       console.log("[ChatKitPanel] ========== Response ended ==========");
       console.log(
         "[ChatKitPanel] Response object keys:",
-        response ? Object.keys(response) : "null"
+        response ? Object.keys(response) : "null",
       );
       console.log(
         "[ChatKitPanel] Response text:",
-        response?.text?.substring(0, 100)
+        response?.text?.substring(0, 100),
       );
       console.log(
         "[ChatKitPanel] Accumulated text (DOM):",
-        currentResponseText.current.substring(0, 100)
+        currentResponseText.current.substring(0, 100),
       );
 
       // Stop DOM polling
@@ -735,7 +735,7 @@ export function ChatKitPanel({
         (window as any).__chatkitResponseTimestamp = Date.now();
         console.log(
           "[ChatKitPanel] Stored response in window, length:",
-          finalText.length
+          finalText.length,
         );
       }
 
@@ -744,7 +744,7 @@ export function ChatKitPanel({
         console.log(
           "[ChatKitPanel] Dispatching chatkit:message event with",
           finalText.length,
-          "chars"
+          "chars",
         );
         window.dispatchEvent(
           new CustomEvent("chatkit:message", {
@@ -752,7 +752,7 @@ export function ChatKitPanel({
               role: "assistant",
               content: finalText,
             },
-          })
+          }),
         );
       } else {
         console.log("[ChatKitPanel] ⚠️  No response text to dispatch!");
@@ -760,7 +760,7 @@ export function ChatKitPanel({
 
       // SMS sending is handled by the webhook itself using SSE interception
       console.log(
-        "[ChatKitPanel] SMS sending handled by webhook (not by client-side)"
+        "[ChatKitPanel] SMS sending handled by webhook (not by client-side)",
       );
 
       // Reset accumulated response
@@ -792,7 +792,7 @@ export function ChatKitPanel({
       console.error("[ChatKitPanel] Error:", error);
       console.error(
         "[ChatKitPanel] Error details:",
-        JSON.stringify(error, null, 2)
+        JSON.stringify(error, null, 2),
       );
 
       // Dispatch error event for browserless mode
@@ -800,7 +800,7 @@ export function ChatKitPanel({
         window.dispatchEvent(
           new CustomEvent("chatkit:error", {
             detail: { error: String(error) },
-          })
+          }),
         );
       }
     },
@@ -825,7 +825,7 @@ export function ChatKitPanel({
     if (chatkit.control) {
       if (isDev) {
         console.log(
-          "[ChatKitPanel] ========== ChatKit control initialized =========="
+          "[ChatKitPanel] ========== ChatKit control initialized ==========",
         );
         console.log("[ChatKitPanel] ChatKit is ready to send/receive messages");
       }
@@ -840,12 +840,12 @@ export function ChatKitPanel({
   useEffect(() => {
     console.log(
       "[ChatKitPanel] Setting up incoming-sms listener, control available:",
-      Boolean(chatkit.control)
+      Boolean(chatkit.control),
     );
 
     if (!chatkit.control || !isBrowser) {
       console.log(
-        "[ChatKitPanel] Waiting for chatkit.control to be available..."
+        "[ChatKitPanel] Waiting for chatkit.control to be available...",
       );
       return;
     }
@@ -868,7 +868,7 @@ export function ChatKitPanel({
         });
 
         console.log(
-          "[ChatKitPanel] ✅ SMS successfully injected into ChatKit!"
+          "[ChatKitPanel] ✅ SMS successfully injected into ChatKit!",
         );
       } catch (error) {
         console.error("[ChatKitPanel] ❌ Error injecting SMS:", error);
@@ -887,7 +887,7 @@ export function ChatKitPanel({
     return () => {
       window.removeEventListener(
         "incoming-sms" as any,
-        handleIncomingSms as any
+        handleIncomingSms as any,
       );
       (window as any).__chatkitReady = false;
     };
@@ -1131,9 +1131,10 @@ export function ChatKitPanel({
             </a>
           </p>
           <p className="text-[10px] leading-relaxed">
-            Msg2AgentBuilder is a trademark of RethinkLabs. OpenAI is a registered trademark
-            of OpenAI, Inc. Twilio is a registered trademark of Twilio Inc. All
-            trademarks are the property of their respective owners.
+            Msg2AgentBuilder is a trademark of RethinkLabs. OpenAI is a
+            registered trademark of OpenAI, Inc. Twilio is a registered
+            trademark of Twilio Inc. All trademarks are the property of their
+            respective owners.
           </p>
         </div>
       </div>
@@ -1143,7 +1144,7 @@ export function ChatKitPanel({
 
 function extractErrorDetail(
   payload: Record<string, unknown> | undefined,
-  fallback: string
+  fallback: string,
 ): string {
   if (!payload) {
     return fallback;

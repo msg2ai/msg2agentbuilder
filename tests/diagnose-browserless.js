@@ -57,7 +57,7 @@ async function diagnose() {
     try {
       await page.waitForFunction(
         () => window.customElements?.get("openai-chatkit") !== undefined,
-        { timeout: 30000 }
+        { timeout: 30000 },
       );
       console.log("   ✅ ChatKit web component registered\n");
     } catch (e) {
@@ -87,7 +87,7 @@ async function diagnose() {
         const messageHandler = (event) => {
           console.log(
             "[diagnose] chatkit:message event received:",
-            event.detail
+            event.detail,
           );
           messageReceived = true;
           resolve({
@@ -104,7 +104,7 @@ async function diagnose() {
         window.dispatchEvent(
           new CustomEvent("incoming-sms", {
             detail: { from: "+15551234567", message: "Test message" },
-          })
+          }),
         );
 
         // Timeout after 30 seconds

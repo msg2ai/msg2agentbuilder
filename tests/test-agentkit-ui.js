@@ -121,7 +121,7 @@ async function testAgentKitUI() {
       const chatkitScript = scripts.find(
         (s) =>
           s.src?.includes("chatkit.js") ||
-          s.src?.includes("platform.openai.com")
+          s.src?.includes("platform.openai.com"),
       );
 
       return {
@@ -134,11 +134,11 @@ async function testAgentKitUI() {
 
     console.log(`  ✓ Total scripts: ${chatkitScriptInfo.totalScripts}`);
     console.log(
-      `  ✓ ChatKit script found: ${chatkitScriptInfo.hasChatkitScript}`
+      `  ✓ ChatKit script found: ${chatkitScriptInfo.hasChatkitScript}`,
     );
     if (chatkitScriptInfo.chatkitScriptSrc) {
       console.log(
-        `  ✓ ChatKit script URL: ${chatkitScriptInfo.chatkitScriptSrc}`
+        `  ✓ ChatKit script URL: ${chatkitScriptInfo.chatkitScriptSrc}`,
       );
     }
     results.passed++;
@@ -202,28 +202,28 @@ async function testAgentKitUI() {
 
     console.log(`  ✓ Total elements on page: ${widgetInfo.totalElements}`);
     console.log(
-      `  ✓ Elements with Shadow DOM: ${widgetInfo.elementsWithShadow.length}`
+      `  ✓ Elements with Shadow DOM: ${widgetInfo.elementsWithShadow.length}`,
     );
 
     if (widgetInfo.elementsWithShadow.length > 0) {
       console.log(`  ✓ Shadow DOM elements found:`);
       widgetInfo.elementsWithShadow.forEach((el) => {
         console.log(
-          `    - <${el.tagName.toLowerCase()}> ${el.id ? `id="${el.id}"` : ""} ${el.className ? `class="${el.className}"` : ""}`
+          `    - <${el.tagName.toLowerCase()}> ${el.id ? `id="${el.id}"` : ""} ${el.className ? `class="${el.className}"` : ""}`,
         );
       });
     }
 
     if (widgetInfo.widgetFound) {
       console.log(
-        `  ✓ Widget found with selector: ${widgetInfo.widgetSelector}`
+        `  ✓ Widget found with selector: ${widgetInfo.widgetSelector}`,
       );
       console.log(`  ✓ Widget tag: ${widgetInfo.widgetTagName}`);
       console.log(`  ✓ Widget has shadow DOM: ${widgetInfo.hasShadowRoot}`);
       results.passed++;
     } else {
       console.log(
-        `  ℹ️  No ChatKit widget detected yet (may still be loading)`
+        `  ℹ️  No ChatKit widget detected yet (may still be loading)`,
       );
       results.passed++; // Don't fail, as it might still be loading
     }
@@ -271,7 +271,7 @@ async function testAgentKitUI() {
     const contentInfo = await page.evaluate(() => {
       const allText = document.body?.innerText || "";
       const headings = Array.from(
-        document.querySelectorAll("h1, h2, h3, h4, h5, h6")
+        document.querySelectorAll("h1, h2, h3, h4, h5, h6"),
       )
         .map((h) => ({ tag: h.tagName, text: h.textContent?.trim() }))
         .filter((h) => h.text);
@@ -285,7 +285,7 @@ async function testAgentKitUI() {
     });
 
     console.log(
-      `  ✓ Page has visible content: ${contentInfo.hasVisibleContent}`
+      `  ✓ Page has visible content: ${contentInfo.hasVisibleContent}`,
     );
     console.log(`  ✓ Total text length: ${contentInfo.textLength} characters`);
     if (contentInfo.headings.length > 0) {
@@ -296,7 +296,7 @@ async function testAgentKitUI() {
     }
     if (contentInfo.firstWords) {
       console.log(
-        `  ✓ First content: "${contentInfo.firstWords}${contentInfo.textLength > 100 ? "..." : ""}"`
+        `  ✓ First content: "${contentInfo.firstWords}${contentInfo.textLength > 100 ? "..." : ""}"`,
       );
     }
     results.passed++;
@@ -349,10 +349,10 @@ async function testAgentKitUI() {
     console.log(`  ✓ Buttons found: ${interactionInfo.buttonCount}`);
     console.log(`  ✓ Inputs found: ${interactionInfo.inputCount}`);
     console.log(
-      `  ✓ Other clickable elements: ${interactionInfo.clickableCount}`
+      `  ✓ Other clickable elements: ${interactionInfo.clickableCount}`,
     );
     console.log(
-      `  ✓ Has interactive elements: ${interactionInfo.hasInteractiveElements}`
+      `  ✓ Has interactive elements: ${interactionInfo.hasInteractiveElements}`,
     );
     results.passed++;
 
@@ -370,13 +370,13 @@ async function testAgentKitUI() {
     });
 
     console.log(
-      `  ✓ DOM Content Loaded: ${metrics.domContentLoaded?.toFixed(2) || "N/A"} ms`
+      `  ✓ DOM Content Loaded: ${metrics.domContentLoaded?.toFixed(2) || "N/A"} ms`,
     );
     console.log(
-      `  ✓ Page Load Time: ${metrics.loadTime?.toFixed(2) || "N/A"} ms`
+      `  ✓ Page Load Time: ${metrics.loadTime?.toFixed(2) || "N/A"} ms`,
     );
     console.log(
-      `  ✓ DOM Interactive: ${metrics.domInteractive?.toFixed(2) || "N/A"} ms`
+      `  ✓ DOM Interactive: ${metrics.domInteractive?.toFixed(2) || "N/A"} ms`,
     );
     results.passed++;
 
@@ -387,7 +387,7 @@ async function testAgentKitUI() {
     console.log(`✅ Passed: ${results.passed}`);
     console.log(`❌ Failed: ${results.failed}`);
     console.log(
-      `📈 Success Rate: ${((results.passed / (results.passed + results.failed)) * 100).toFixed(1)}%\n`
+      `📈 Success Rate: ${((results.passed / (results.passed + results.failed)) * 100).toFixed(1)}%\n`,
     );
 
     console.log("🎉 AgentKit UI testing completed!\n");

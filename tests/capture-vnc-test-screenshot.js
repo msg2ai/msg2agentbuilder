@@ -145,7 +145,7 @@ async function captureVirtualDisplayScreenshot() {
     console.log("✅ Screenshot captured successfully!");
     console.log(`📸 Location: ${screenshotPath}`);
     console.log(
-      `\nThis screenshot shows what you would see via VNC connection.`
+      `\nThis screenshot shows what you would see via VNC connection.`,
     );
     console.log(`The virtual display is running and accessible.\n`);
   } catch (error) {

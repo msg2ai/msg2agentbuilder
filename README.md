@@ -24,6 +24,7 @@ Msg2AgentBuilder bridges SMS messaging with AI-powered conversations by connecti
 ## Features
 
 - **ChatKit Integration**: Full-featured web component with theming controls
+
 ## Quick Start Guide
 
 ### For Production Deployment to Google Cloud Run (Recommended)
@@ -31,17 +32,20 @@ Msg2AgentBuilder bridges SMS messaging with AI-powered conversations by connecti
 **Time Estimate:** 15-20 minutes (first deployment)
 
 #### Prerequisites
+
 - Google Cloud account with billing enabled
 - OpenAI API key and workflow ID
 - Twilio account (for SMS functionality)
 
 #### Step 1: Authenticate with Google Cloud (2 minutes)
+
 ```bash
 gcloud auth login
 gcloud config set project YOUR_PROJECT_ID
 ```
 
 **Common Issue:** If you see "problem refreshing your current auth tokens":
+
 ```bash
 # Solution: Re-authenticate
 gcloud auth login
@@ -84,6 +88,7 @@ chmod +x scripts/deploy-cloudrun-virtual-display.sh
 ```
 
 The script will:
+
 - Load configuration from `.env.local`
 - Build the Docker image
 - Push to Google Container Registry
@@ -95,15 +100,18 @@ The script will:
 After deployment, the script displays your service URL. Use it to configure Twilio:
 
 Example output:
+
 ```
 https://chatkit-app-95149419358.us-central1.run.app
 ```
 
 Go to [Twilio Console](https://console.twilio.com/) and set:
+
 - **Webhook URL:** `https://YOUR-SERVICE-URL.run.app/api/sms-webhook`
 - **HTTP Method:** POST
 
 #### Verify Deployment
+
 ```bash
 # Test health endpoint
 curl https://YOUR-SERVICE-URL.run.app/api/health
@@ -282,6 +290,7 @@ chmod +x scripts/*.sh
 ```
 
 The script handles:
+
 - Loading all configuration from `.env.local`
 - Building the Docker image
 - Pushing to Google Container Registry

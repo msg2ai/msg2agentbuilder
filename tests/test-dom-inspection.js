@@ -155,7 +155,7 @@ async function testDOMInspection() {
 
     const shadowButtonText = await page.evaluate(
       (btn) => btn.textContent,
-      shadowButton
+      shadowButton,
     );
     console.log(`  ✓ Accessed shadow button directly: "${shadowButtonText}"\n`);
     results.passed++;
@@ -213,7 +213,7 @@ async function testDOMInspection() {
     console.log(`  ✓ Element class: ${manipulationResults.elementClass}`);
     console.log(`  ✓ Element style: ${manipulationResults.elementStyle}`);
     console.log(
-      `  ✓ List items created: ${manipulationResults.listItems.length}\n`
+      `  ✓ List items created: ${manipulationResults.listItems.length}\n`,
     );
     results.passed++;
 
@@ -269,7 +269,7 @@ async function testDOMInspection() {
     // Test click event
     await page.click("#test-btn");
     await page.waitForFunction(
-      () => document.getElementById("output").textContent === "Button clicked!"
+      () => document.getElementById("output").textContent === "Button clicked!",
     );
     const outputText = await page.$eval("#output", (el) => el.textContent);
     console.log(`  ✓ Button click event: ${outputText}\n`);
@@ -479,7 +479,7 @@ async function testDOMInspection() {
     console.log(`  ✓ Width: ${boundingBox.width}px`);
     console.log(`  ✓ Height: ${boundingBox.height}px`);
     console.log(
-      `  ✓ Position (top, left): (${boundingBox.top}px, ${boundingBox.left}px)`
+      `  ✓ Position (top, left): (${boundingBox.top}px, ${boundingBox.left}px)`,
     );
     console.log(`  ✓ Computed width: ${boundingBox.computedWidth}`);
     console.log(`  ✓ Computed height: ${boundingBox.computedHeight}\n`);
@@ -525,7 +525,7 @@ async function testDOMInspection() {
 
     const screenshotPath = path.join(
       __dirname,
-      "test-dom-inspection-screenshot.png"
+      "test-dom-inspection-screenshot.png",
     );
     await page.screenshot({ path: screenshotPath, fullPage: true });
     console.log(`  ✓ Screenshot saved: ${screenshotPath}\n`);
@@ -612,7 +612,7 @@ async function testDOMInspection() {
       }
 
       const messages = Array.from(
-        shadow.querySelectorAll(".chatkit-message") || []
+        shadow.querySelectorAll(".chatkit-message") || [],
       ).map((msg) => ({
         id: msg.dataset.messageId,
         text: msg.textContent,
@@ -648,15 +648,15 @@ async function testDOMInspection() {
         });
       }
       console.log(
-        `  ✓ Input exists: ${chatkitTest.inputExists} (${chatkitTest.inputPlaceholder})`
+        `  ✓ Input exists: ${chatkitTest.inputExists} (${chatkitTest.inputPlaceholder})`,
       );
       console.log(
-        `  ✓ Button exists: ${chatkitTest.buttonExists} (${chatkitTest.buttonText})\n`
+        `  ✓ Button exists: ${chatkitTest.buttonExists} (${chatkitTest.buttonText})\n`,
       );
 
       const chatkitScreenshot = path.join(
         __dirname,
-        "test-chatkit-widget-screenshot.png"
+        "test-chatkit-widget-screenshot.png",
       );
       await page.screenshot({ path: chatkitScreenshot, fullPage: true });
       console.log(`  ✓ ChatKit screenshot: ${chatkitScreenshot}\n`);
@@ -670,7 +670,7 @@ async function testDOMInspection() {
     console.log(`✅ Passed: ${results.passed}`);
     console.log(`❌ Failed: ${results.failed}`);
     console.log(
-      `📈 Success Rate: ${((results.passed / (results.passed + results.failed)) * 100).toFixed(1)}%\n`
+      `📈 Success Rate: ${((results.passed / (results.passed + results.failed)) * 100).toFixed(1)}%\n`,
     );
 
     console.log("🎉 All DOM inspection tests completed successfully!\n");

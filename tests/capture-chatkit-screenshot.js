@@ -74,7 +74,7 @@ async function captureChatKit() {
         });
 
         console.log(
-          `  [${i}s] Inputs: ${status.inputCount}, Buttons: ${status.buttonCount}, Loading: ${status.hasLoading}`
+          `  [${i}s] Inputs: ${status.inputCount}, Buttons: ${status.buttonCount}, Loading: ${status.hasLoading}`,
         );
         console.log(`  [${i}s] Content: "${status.preview}..."`);
       }
@@ -123,7 +123,7 @@ async function captureChatKit() {
         shadowDOMCount:
           document.querySelectorAll("*").length -
           Array.from(document.querySelectorAll("*")).filter(
-            (el) => !el.shadowRoot
+            (el) => !el.shadowRoot,
           ).length,
         chatKitElements,
         hasLoadingText: bodyText.includes("Loading"),
@@ -143,7 +143,7 @@ async function captureChatKit() {
       console.log("  ChatKit elements found:");
       finalState.chatKitElements.forEach((el) => {
         console.log(
-          `    - ${el.tag} ${el.id ? `id="${el.id}"` : ""} ${el.hasShadow ? "(has shadow)" : ""}`
+          `    - ${el.tag} ${el.id ? `id="${el.id}"` : ""} ${el.hasShadow ? "(has shadow)" : ""}`,
         );
       });
       console.log("");

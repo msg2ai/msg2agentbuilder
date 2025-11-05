@@ -42,7 +42,7 @@ async function debug() {
       return {
         hasChatkit: typeof window.chatkit !== "undefined",
         windowKeys: Object.keys(window).filter(
-          (k) => k.includes("chat") || k.includes("Chat")
+          (k) => k.includes("chat") || k.includes("Chat"),
         ),
         title: document.title,
         bodyText: document.body
@@ -63,7 +63,7 @@ async function debug() {
       return {
         hasChatkit: typeof window.chatkit !== "undefined",
         windowKeys: Object.keys(window).filter(
-          (k) => k.includes("chat") || k.includes("Chat")
+          (k) => k.includes("chat") || k.includes("Chat"),
         ),
       };
     });

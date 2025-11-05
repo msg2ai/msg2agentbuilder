@@ -12,11 +12,11 @@
 const http = require("http");
 
 console.log(
-  "=========================================================================================="
+  "==========================================================================================",
 );
 console.log("🐳 SMS WEBHOOK TEST (Docker)");
 console.log(
-  "==========================================================================================\n"
+  "==========================================================================================\n",
 );
 
 async function testSMSWebhook() {
@@ -77,7 +77,7 @@ async function testSMSWebhook() {
           console.log('   3. Capture method used (should be "sse-intercept")');
           console.log("");
           console.log(
-            "Run: docker logs openai-chatkit-extraction-app-virtual-display-1 --tail 50"
+            "Run: docker logs openai-chatkit-extraction-app-virtual-display-1 --tail 50",
           );
         } else if (res.statusCode === 429) {
           console.log("⚠️  RATE LIMITED - Too many requests");
@@ -95,10 +95,10 @@ async function testSMSWebhook() {
       console.error("\n🔍 Troubleshooting:");
       console.error("   1. Is Docker running? Run: docker ps");
       console.error(
-        "   2. Is the app accessible? Try: curl http://localhost:3003"
+        "   2. Is the app accessible? Try: curl http://localhost:3003",
       );
       console.error(
-        "   3. Check Docker logs: docker logs openai-chatkit-extraction-app-virtual-display-1"
+        "   3. Check Docker logs: docker logs openai-chatkit-extraction-app-virtual-display-1",
       );
       reject(error);
     });
@@ -107,7 +107,7 @@ async function testSMSWebhook() {
       req.destroy();
       console.error("❌ Request timed out after 60 seconds");
       console.error(
-        "\n🔍 The ChatKit response might be taking longer than expected"
+        "\n🔍 The ChatKit response might be taking longer than expected",
       );
       console.error("   Check Docker logs for details");
       reject(new Error("Timeout"));

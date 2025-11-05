@@ -69,7 +69,7 @@ async function testSMSIntegration() {
       () => {
         return window.__chatkitReady === true;
       },
-      { timeout: 30000 }
+      { timeout: 30000 },
     );
     console.log("✓ ChatKit is ready!\n");
 
@@ -96,7 +96,7 @@ async function testSMSIntegration() {
 
     const smsResult = await smsResponse.text();
     console.log(
-      `✓ SMS sent! Response: ${smsResponse.status} ${smsResponse.statusText}`
+      `✓ SMS sent! Response: ${smsResponse.status} ${smsResponse.statusText}`,
     );
     console.log(`  Response body: ${smsResult.substring(0, 100)}\n`);
 
@@ -122,7 +122,7 @@ async function testSMSIntegration() {
     console.log("📊 UI State after SMS:");
     console.log(`  Has test message: ${messageState.hasTestMessage}`);
     console.log(
-      `  Content preview: "${messageState.bodyPreview.substring(0, 150)}..."\n`
+      `  Content preview: "${messageState.bodyPreview.substring(0, 150)}..."\n`,
     );
 
     // Step 6: Wait for AI response
@@ -162,7 +162,7 @@ async function testSMSIntegration() {
         if (i === 9 || i === 19) {
           const progressScreenshot = path.join(
             __dirname,
-            `sms-test-3-progress-${i + 1}s.png`
+            `sms-test-3-progress-${i + 1}s.png`,
           );
           await page.screenshot({ path: progressScreenshot, fullPage: true });
           console.log(`  📸 Progress: ${progressScreenshot}`);
@@ -209,7 +209,7 @@ async function testSMSIntegration() {
     console.log("═══════════════════════════════════════════════════════════");
     console.log("📊 TEST SUMMARY");
     console.log(
-      "═══════════════════════════════════════════════════════════\n"
+      "═══════════════════════════════════════════════════════════\n",
     );
 
     console.log("✅ Test Steps:");
@@ -218,7 +218,7 @@ async function testSMSIntegration() {
     console.log("  3. ✓ ChatKit initialized");
     console.log("  4. ✓ SMS sent to webhook");
     console.log(
-      `  5. ${messageState.hasTestMessage ? "✓" : "⚠"} Message injected into UI`
+      `  5. ${messageState.hasTestMessage ? "✓" : "⚠"} Message injected into UI`,
     );
     console.log(`  6. ${responseReceived ? "✓" : "❌"} AI response received`);
     console.log("  7. ✓ Screenshots captured\n");
@@ -272,7 +272,7 @@ async function testSMSIntegration() {
 
     require("fs").writeFileSync(
       path.join(__dirname, "sms-test-report.json"),
-      JSON.stringify(report, null, 2)
+      JSON.stringify(report, null, 2),
     );
     console.log("📄 Detailed report saved to: sms-test-report.json\n");
 
@@ -280,10 +280,10 @@ async function testSMSIntegration() {
     console.log(
       responseReceived
         ? "✅ TEST PASSED!"
-        : "⚠️  TEST COMPLETED (check results)"
+        : "⚠️  TEST COMPLETED (check results)",
     );
     console.log(
-      "═══════════════════════════════════════════════════════════\n"
+      "═══════════════════════════════════════════════════════════\n",
     );
 
     // Keep browser open for 15 seconds for inspection
@@ -295,7 +295,7 @@ async function testSMSIntegration() {
 
     // Keep browser open on error
     console.log(
-      "\n⚠️  Error occurred. Browser will stay open for 30 seconds...\n"
+      "\n⚠️  Error occurred. Browser will stay open for 30 seconds...\n",
     );
     await new Promise((resolve) => setTimeout(resolve, 30000));
 

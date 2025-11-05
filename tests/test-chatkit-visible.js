@@ -62,7 +62,7 @@ async function testVisibleBrowser() {
         }
       } else if (url.includes("chatkit.js")) {
         console.log(
-          `  [Response] ${response.status()} ${url} (${response.headers()["content-length"] || "unknown"} bytes)`
+          `  [Response] ${response.status()} ${url} (${response.headers()["content-length"] || "unknown"} bytes)`,
         );
       }
     });
@@ -100,7 +100,7 @@ async function testVisibleBrowser() {
         console.log(`  Loading State: ${state.hasLoading}`);
         console.log(`  Chat Visible: ${state.hasChat}`);
         console.log(
-          `  Inputs: ${state.inputCount}, Buttons: ${state.buttonCount}`
+          `  Inputs: ${state.inputCount}, Buttons: ${state.buttonCount}`,
         );
         console.log(`  Preview: "${state.bodyPreview.substring(0, 100)}..."`);
 
@@ -118,7 +118,7 @@ async function testVisibleBrowser() {
           console.log("✅ SUCCESS! ChatKit has loaded!\n");
           const finalScreenshot = path.join(
             __dirname,
-            "chatkit-visible-success.png"
+            "chatkit-visible-success.png",
           );
           await page.screenshot({ path: finalScreenshot, fullPage: true });
           console.log(`📸 Final screenshot: ${finalScreenshot}\n`);
@@ -128,19 +128,19 @@ async function testVisibleBrowser() {
         // If still loading after 30 seconds, something is wrong
         if (i >= 30 && state.hasLoading && !state.chatkitReady) {
           console.log(
-            "⚠️  Still loading after 30 seconds. This may indicate an issue.\n"
+            "⚠️  Still loading after 30 seconds. This may indicate an issue.\n",
           );
         }
       }
     }
 
     console.log(
-      "\n═══════════════════════════════════════════════════════════"
+      "\n═══════════════════════════════════════════════════════════",
     );
     console.log("Browser will stay open for 30 more seconds for inspection.");
     console.log("Check the DevTools console for any errors.");
     console.log(
-      "═══════════════════════════════════════════════════════════\n"
+      "═══════════════════════════════════════════════════════════\n",
     );
 
     await new Promise((resolve) => setTimeout(resolve, 30000));
@@ -154,7 +154,7 @@ async function testVisibleBrowser() {
 
     // Keep browser open on error for debugging
     console.log(
-      "\n⚠️  Error occurred. Browser will stay open for 30 seconds for debugging...\n"
+      "\n⚠️  Error occurred. Browser will stay open for 30 seconds for debugging...\n",
     );
     await new Promise((resolve) => setTimeout(resolve, 30000));
   } finally {

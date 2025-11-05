@@ -51,7 +51,7 @@ async function testWorkflow() {
             },
           },
         }),
-      }
+      },
     );
 
     console.log("Session Response Status:", sessionResponse.status);
@@ -74,7 +74,7 @@ async function testWorkflow() {
     console.log("\n✅ Session created successfully");
     console.log(
       "Client secret received:",
-      sessionData.client_secret.substring(0, 20) + "..."
+      sessionData.client_secret.substring(0, 20) + "...",
     );
 
     // Step 2: Test sending a message
@@ -100,14 +100,14 @@ async function testWorkflow() {
             },
           },
         }),
-      }
+      },
     );
 
     console.log("Message Response Status:", messageResponse.status);
     console.log("Message Response Status Text:", messageResponse.statusText);
     console.log(
       "Message Response Headers:",
-      Object.fromEntries(messageResponse.headers.entries())
+      Object.fromEntries(messageResponse.headers.entries()),
     );
 
     if (!messageResponse.ok) {
