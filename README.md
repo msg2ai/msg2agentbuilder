@@ -95,6 +95,16 @@ The script will:
 - Deploy to Cloud Run
 - Return your service URL
 
+**Important - Organization Policy Note:**
+
+If your Google Cloud organization has IAM restrictions, you may need to enable public access manually. The deployment includes `--allow-unauthenticated`, but organization policies may override this. See [docs/PUBLIC_ACCESS_SETUP.md](docs/PUBLIC_ACCESS_SETUP.md) for details.
+
+To enable public access after deployment:
+
+```bash
+./scripts/allow-public-cloudrun.sh
+```
+
 #### Step 4: Configure Twilio Webhook (2 minutes)
 
 After deployment, the script displays your service URL. Use it to configure Twilio:
