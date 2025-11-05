@@ -105,17 +105,85 @@ APP_URL=
 VNC_PASSWORD=password
 ```
 
-### Step 4: Run Development Server
+### Step 4: Set Up ngrok for Local Development
+
+**Important**: OpenAI's domain allowlist does not accept `localhost` as a valid domain. You must use ngrok to create a public URL for local development.
+
+#### 4.1. Install ngrok
+
+```bash
+# macOS
+brew install ngrok
+
+# Or download from https://ngrok.com/download
+```
+
+#### 4.2. Sign up and authenticate ngrok
+
+1. Sign up for a free account at https://dashboard.ngrok.com/signup
+2. Get your authtoken from https://dashboard.ngrok.com/get-started/your-authtoken
+3. Configure ngrok:
+
+```bash
+ngrok config add-authtoken YOUR_AUTHTOKEN_HERE
+```
+
+#### 4.3. Start the development server
 
 ```bash
 npm run dev
 ```
 
-Access the application at: **http://localhost:3000**
+Note the port number (e.g., `http://localhost:3001`)
+
+#### 4.4. Start ngrok tunnel
+
+In a new terminal:
+
+```bash
+ngrok http 3001
+```
+
+Replace `3001` with the actual port your dev server is using.
+
+You'll see output like:
+```
+Forwarding    https://abc123def456.ngrok-free.app -> http://localhost:3001
+```
+
+**Copy the ngrok URL** (e.g., `abc123def456.ngrok-free.app` without `https://`)
+
+#### 4.5. Add ngrok domain to OpenAI
+
+1. Go to https://platform.openai.com/settings/organization/domain-allowlist
+2. Click **"Add Domain"**
+3. Enter your ngrok domain (e.g., `abc123def456.ngrok-free.app`)
+4. Copy the generated **domain key** (starts with `domain_pk_`)
+
+#### 4.6. Update .env.local with ngrok domain key
+
+Replace the `NEXT_PUBLIC_CHATKIT_DOMAIN_KEY` in your `.env.local`:
+
+```bash
+NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=domain_pk_your_new_key_here
+```
+
+#### 4.7. Restart the development server
+
+Stop the dev server (Ctrl+C) and restart:
+
+```bash
+npm run dev
+```
+
+**Important Notes:**
+- Access your application via the **ngrok URL** (not localhost)
+- ngrok URLs change each time you restart ngrok (free plan)
+- You'll need to update the domain in OpenAI's allowlist when the ngrok URL changes
 
 ### Step 5: Test the Application
 
-1. Open http://localhost:3000 in your browser
+1. Open your **ngrok URL** in your browser (e.g., `https://abc123def456.ngrok-free.app`)
 2. You should see the ChatKit UI with the title "Msg2AgentBuilder - SMS Integration with Agent Builder (OpenAI)"
 3. Try typing a message in the chat interface
 4. Verify AI responses are working
@@ -467,16 +535,18 @@ The domain key authenticates your domain with OpenAI's ChatKit service. Follow t
 1. Go to [OpenAI Domain Allowlist Settings](https://platform.openai.com/settings/organization/domain-allowlist)
 2. Click **"Add Domain"**
 3. Enter your domain:
-   - **For local development**: Enter `localhost`
+   - **For local development**: Use your **ngrok domain** (e.g., `abc123.ngrok-free.app`) - See [Local Development Setup](#local-development-setup) for ngrok setup instructions
    - **For Cloud Run**: Enter your Cloud Run URL (e.g., `your-app-name.run.app`)
    - **For custom domain**: Enter your full domain (e.g., `yourdomain.com`)
 4. After adding the domain, OpenAI will generate a **domain key** starting with `domain_pk_`
 5. Copy this domain key to your `.env.local` file as `NEXT_PUBLIC_CHATKIT_DOMAIN_KEY`
 
 **Important Notes:**
-- You may need separate domain keys for local development (`localhost`) and production
+- ⚠️ **`localhost` is NOT accepted** by OpenAI's domain allowlist - you must use ngrok or deploy to Cloud Run
+- You will need separate domain keys for local development (ngrok) and production (Cloud Run)
 - Domain keys are public and safe to include in client-side code
 - Changes to domain allowlist may take a few minutes to propagate
+- Free ngrok URLs change on restart, requiring a new domain key each time
 
 #### Twilio Configuration
 
