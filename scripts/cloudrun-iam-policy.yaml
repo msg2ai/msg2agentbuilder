@@ -1,9 +1,8 @@
 bindings:
 - members:
-  - user:bart@rethink-labs.com
-  - user:greg@rethink-labs.com
+  - user:YOUR_EMAIL@example.com
   role: roles/run.invoker
 - members:
   - allUsers
   role: roles/run.invoker
-etag: BwZCzvacxio=
+etag: REPLACE_WITH_ACTUAL_ETAG

@@ -27,7 +27,6 @@ echo "=========================================="
 echo "Project: $PROJECT_ID"
 echo "Service: $SERVICE_NAME"
 echo "Region: $REGION"
-echo "User: bart@msg2ai.xyz"
 echo ""
 
 # Validate required configuration
@@ -62,9 +61,13 @@ if [ -z "$NEXT_PUBLIC_CHATKIT_DOMAIN_KEY" ]; then
   exit 1
 fi
 
-if [ -z "$TWILIO_ACCOUNT_SID" ] || [ -z "$TWILIO_AUTH_TOKEN" ] || [ -z "$TWILIO_PHONE_NUMBER" ]; then
+if [ -z "$TWILIO_ACCOUNT_SID" ] || [ -z "$TWILIO_API_KEY_SID" ] || [ -z "$TWILIO_API_KEY_SECRET" ] || [ -z "$TWILIO_PHONE_NUMBER" ]; then
   echo "Warning: Twilio credentials not set. SMS functionality will not work."
-  echo "Set them with: export TWILIO_ACCOUNT_SID=... TWILIO_AUTH_TOKEN=... TWILIO_PHONE_NUMBER=..."
+  echo "Set them in .env.local:"
+  echo "  TWILIO_ACCOUNT_SID=..."
+  echo "  TWILIO_API_KEY_SID=..."
+  echo "  TWILIO_API_KEY_SECRET=..."
+  echo "  TWILIO_PHONE_NUMBER=..."
 fi
 
 # Build Docker image using virtual display Dockerfile
@@ -102,7 +105,7 @@ gcloud run deploy $SERVICE_NAME \
   --cpu $CPU \
   --port 3000 \
   --timeout 300 \
-  --set-env-vars "NODE_ENV=production,DISPLAY=:99,VIRTUAL_DISPLAY=true,BROWSER_VISIBLE=true,OPENAI_API_KEY=$OPENAI_API_KEY,NEXT_PUBLIC_WORKFLOW_ID=$NEXT_PUBLIC_WORKFLOW_ID,NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=$NEXT_PUBLIC_CHATKIT_DOMAIN_KEY,TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN=$TWILIO_AUTH_TOKEN,TWILIO_PHONE_NUMBER=$TWILIO_PHONE_NUMBER"
+  --set-env-vars "NODE_ENV=production,DISPLAY=:99,VIRTUAL_DISPLAY=true,BROWSER_VISIBLE=true,OPENAI_API_KEY=$OPENAI_API_KEY,NEXT_PUBLIC_WORKFLOW_ID=$NEXT_PUBLIC_WORKFLOW_ID,NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=$NEXT_PUBLIC_CHATKIT_DOMAIN_KEY,TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID,TWILIO_API_KEY_SID=$TWILIO_API_KEY_SID,TWILIO_API_KEY_SECRET=$TWILIO_API_KEY_SECRET,TWILIO_PHONE_NUMBER=$TWILIO_PHONE_NUMBER,DISABLE_OCR_FALLBACK=${DISABLE_OCR_FALLBACK:-true}"
 
 # Get the service URL
 SERVICE_URL=$(gcloud run services describe $SERVICE_NAME \

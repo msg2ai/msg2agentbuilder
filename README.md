@@ -76,11 +76,20 @@ cp .env.example .env.local
 # Edit .env.local with your credentials
 # Fill in all required values for:
 # - OpenAI (API key, workflow ID, domain key)
-# - Twilio (account SID, API key, phone number)
+# - Twilio (account SID, API key SID, API key secret, phone number)
 # - Google Cloud (project ID, region, service name)
 ```
 
-The deployment scripts will automatically load these values.
+**Required Environment Variables:**
+- `OPENAI_API_KEY` - Your OpenAI API key
+- `NEXT_PUBLIC_WORKFLOW_ID` - Your Agent Builder workflow ID (starts with `wf_`)
+- `NEXT_PUBLIC_CHATKIT_DOMAIN_KEY` - Domain key from OpenAI allowlist (starts with `domain_pk_`)
+- `TWILIO_ACCOUNT_SID` - Your Twilio account SID
+- `TWILIO_API_KEY_SID` - Twilio API Key SID (for secure authentication)
+- `TWILIO_API_KEY_SECRET` - Twilio API Key Secret
+- `TWILIO_PHONE_NUMBER` - Your Twilio phone number (E.164 format)
+
+The deployment scripts will automatically load these values from `.env.local`.
 
 #### Step 3: Deploy Using Script (10-15 minutes)
 
