@@ -239,14 +239,14 @@ abc123def456   chatkit-app-virtual...   Up 2 minutes   0.0.0.0:3003->3000/tcp, 0
 
 ### Step 4: Access the Application
 
-#### Web Interface:
+#### Local Access (localhost only):
 
+**Web Interface:**
 ```
 http://localhost:3003
 ```
 
-#### VNC Interface:
-
+**VNC Interface:**
 ```
 vnc://localhost:5900
 Password: password
@@ -257,6 +257,55 @@ Password: password
 - **macOS**: Built-in Screen Sharing (`open vnc://localhost:5900`)
 - **Windows**: [RealVNC Viewer](https://www.realvnc.com/en/connect/download/viewer/)
 - **Linux**: [TigerVNC](https://tigervnc.org/) or Remmina
+
+#### Public Access with ngrok (Required for ChatKit):
+
+**Important**: Since OpenAI's domain allowlist doesn't accept `localhost`, you need ngrok for full ChatKit functionality.
+
+**4.1. Start ngrok tunnel:**
+
+In a new terminal:
+
+```bash
+ngrok http 3003
+```
+
+You'll see output like:
+```
+Forwarding    https://abc123def456.ngrok-free.app -> http://localhost:3003
+```
+
+**4.2. Add ngrok domain to OpenAI:**
+
+1. Copy the ngrok domain (e.g., `abc123def456.ngrok-free.app`)
+2. Go to https://platform.openai.com/settings/organization/domain-allowlist
+3. Click **"Add Domain"** and enter your ngrok domain
+4. Copy the generated **domain key** (starts with `domain_pk_`)
+
+**4.3. Update .env.local:**
+
+Replace the `NEXT_PUBLIC_CHATKIT_DOMAIN_KEY`:
+
+```bash
+NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=domain_pk_your_new_key_here
+```
+
+**4.4. Restart Docker container:**
+
+```bash
+docker-compose -f docker-compose.virtual-display.yml restart
+```
+
+**4.5. Access via ngrok:**
+
+```
+https://abc123def456.ngrok-free.app
+```
+
+Now you have:
+- ✅ Full ChatKit functionality (via ngrok URL)
+- ✅ VNC access to watch browser automation (`vnc://localhost:5900`)
+- ✅ Local HTTP access for debugging (`http://localhost:3003`)
 
 ### Step 5: Watch Browser Automation
 
@@ -297,6 +346,74 @@ docker-compose -f docker-compose.virtual-display.yml up -d --build
 | ---- | ----------- | --------------------- |
 | 3003 | Next.js App | http://localhost:3003 |
 | 5900 | VNC Server  | vnc://localhost:5900  |
+
+### Complete Docker + ngrok + VNC Workflow
+
+Here's the complete workflow for running the application with Docker, ngrok, and VNC:
+
+**Step-by-Step Example:**
+
+```bash
+# 1. Ensure .env.local is configured
+cp .env.example .env.local
+# Edit .env.local with your credentials
+
+# 2. Start Docker container with virtual display
+docker-compose -f docker-compose.virtual-display.yml up -d --build
+
+# 3. Verify container is running
+docker ps
+# Should show: msg2agentbuilder-app-virtual-display-1
+
+# 4. In a new terminal, start ngrok
+ngrok http 3003
+# Copy the ngrok URL (e.g., abc123.ngrok-free.app)
+
+# 5. Add ngrok domain to OpenAI allowlist
+# Visit: https://platform.openai.com/settings/organization/domain-allowlist
+# Add domain and copy the domain key
+
+# 6. Update .env.local with the new domain key
+# NEXT_PUBLIC_CHATKIT_DOMAIN_KEY=domain_pk_xxxxx
+
+# 7. Restart Docker container to apply changes
+docker-compose -f docker-compose.virtual-display.yml restart
+
+# 8. Connect via VNC to watch browser automation
+open vnc://localhost:5900
+# Password: password
+
+# 9. Access application via ngrok URL
+# Open browser: https://abc123.ngrok-free.app
+
+# 10. (Optional) Configure Twilio webhook
+# Webhook URL: https://abc123.ngrok-free.app/api/sms-webhook
+```
+
+**What You Get:**
+
+✅ **Full Production Environment** - Docker container with Xvfb + Chromium
+✅ **ChatKit Functionality** - Working via ngrok public URL
+✅ **Visual Debugging** - VNC access to watch browser automation
+✅ **SMS Integration** - Ready for Twilio webhook testing
+✅ **Hot Reload** - Code changes reflected (if using volumes)
+
+**Useful Commands:**
+
+```bash
+# View container logs
+docker logs -f msg2agentbuilder-app-virtual-display-1
+
+# Restart after .env.local changes
+docker-compose -f docker-compose.virtual-display.yml restart
+
+# Stop everything
+docker-compose -f docker-compose.virtual-display.yml down
+pkill ngrok
+
+# Rebuild after code changes
+docker-compose -f docker-compose.virtual-display.yml up -d --build
+```
 
 ---
 
