@@ -411,7 +411,10 @@ See [tests/README.md](tests/README.md) for all available tests.
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - Complete system architecture, technology stack, and design patterns
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Comprehensive deployment guide for local, Docker, and Google Cloud Run
 - **[TWILIO_INTEGRATION.md](TWILIO_INTEGRATION.md)** - SMS integration setup, testing, and troubleshooting
+- **[docs/PUBLIC_ACCESS_SETUP.md.example](docs/PUBLIC_ACCESS_SETUP.md.example)** - Template for public access configuration (copy to PUBLIC_ACCESS_SETUP.md for local use)
 - [Testing Guide](tests/README.md) - Available tests and how to run them
+
+**Note:** Some documentation files have `.example` versions. Copy these to remove the `.example` suffix and fill in your actual values. The non-example versions are gitignored to protect sensitive information.
 
 ## Architecture
 
