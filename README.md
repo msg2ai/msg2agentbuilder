@@ -25,6 +25,20 @@ Msg2AgentBuilder bridges SMS messaging with AI-powered conversations by connecti
 
 - **ChatKit Integration**: Full-featured web component with theming controls
 
+## Security Notice
+
+**IMPORTANT: Before deploying to production, please review [docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md).**
+
+**Critical Security Issues That Must Be Addressed:**
+
+1. **Twilio Webhook Signature Validation NOT Implemented** - Your webhook endpoint is publicly accessible without authentication. Anyone who knows your webhook URL can trigger AI processing and incur costs. See [TWILIO_INTEGRATION.md](TWILIO_INTEGRATION.md#security-webhook-signature-validation) for implementation.
+
+2. **Container Runs as Root** - The production Dockerfile should be updated to use a non-root user. See [docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md) for details.
+
+For a complete security assessment, see [docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md).
+
+---
+
 ## Quick Start Guide
 
 ### For Production Deployment to Google Cloud Run (Recommended)
@@ -408,6 +422,7 @@ See [tests/README.md](tests/README.md) for all available tests.
 
 ## Documentation
 
+- **[docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md)** - **CRITICAL: Security assessment and required fixes before production**
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - Complete system architecture, technology stack, and design patterns
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Comprehensive deployment guide for local, Docker, and Google Cloud Run
 - **[TWILIO_INTEGRATION.md](TWILIO_INTEGRATION.md)** - SMS integration setup, testing, and troubleshooting

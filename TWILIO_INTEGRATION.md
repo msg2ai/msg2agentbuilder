@@ -1,5 +1,20 @@
 # Twilio SMS Integration Guide
 
+## CRITICAL SECURITY WARNING
+
+**STATUS: Webhook signature validation is NOT currently implemented in [app/api/sms-webhook/route.ts](app/api/sms-webhook/route.ts)**
+
+This means your webhook endpoint is publicly accessible without authentication. Anyone who discovers your webhook URL can:
+- Trigger AI API calls and incur costs
+- Exhaust your rate limits
+- Consume server resources
+
+**REQUIRED BEFORE PRODUCTION: Implement Twilio signature validation as described in [Security: Webhook Signature Validation](#security-webhook-signature-validation) section below.**
+
+See [docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md) for complete security assessment.
+
+---
+
 ## Table of Contents
 
 1. [Overview](#overview)
@@ -255,15 +270,19 @@ When Twilio sends a webhook request, it includes:
 | `FromState`   | Sender's state                          | `DC`                                 |
 | `FromCountry` | Sender's country                        | `US`                                 |
 
-### Webhook Security (Optional Enhancement)
+### Security: Webhook Signature Validation (REQUIRED FOR PRODUCTION)
 
-For production deployments, you can enhance security by implementing Twilio webhook signature validation. This verifies that incoming requests are genuinely from Twilio and not from malicious actors.
+**CRITICAL: Signature validation is NOT currently implemented and MUST be added before production deployment.**
 
-**Why Signature Validation?**
+Twilio webhook signature validation verifies that incoming requests are genuinely from Twilio and not from malicious actors. Without this, your publicly accessible webhook is vulnerable to abuse.
 
-- Prevents unauthorized parties from triggering your webhook
-- Ensures request integrity (message content hasn't been tampered with)
-- Required for PCI compliance in some use cases
+**Why Signature Validation is REQUIRED:**
+
+- **PREVENTS UNAUTHORIZED ACCESS**: Without it, anyone can trigger your webhook and incur AI API costs
+- **PREVENTS RESOURCE EXHAUSTION**: Attackers can exhaust your rate limits and server resources
+- **ENSURES REQUEST INTEGRITY**: Verifies message content hasn't been tampered with
+- **REQUIRED FOR PRODUCTION**: Essential security control for any public webhook endpoint
+- **REQUIRED FOR PCI COMPLIANCE**: Mandatory in many regulated environments
 
 **How Twilio Signature Validation Works:**
 

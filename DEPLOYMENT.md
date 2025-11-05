@@ -1203,14 +1203,75 @@ Total: ~$3/month (+ free tier credit)
 
 ## Security Best Practices
 
-1. **Never commit secrets** to version control
-2. **Use Secret Manager** for production credentials
-3. **Rotate API keys** regularly
-4. **Enable Cloud Armor** for DDoS protection
-5. **Use custom domain** with SSL/TLS
-6. **Implement rate limiting** (already included)
-7. **Monitor logs** for suspicious activity
-8. **Keep dependencies updated**: `npm audit fix`
+**CRITICAL: Review [docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md) before production deployment.**
+
+### Critical Security Issues (Must Address Before Production)
+
+1. **Implement Twilio Webhook Signature Validation** (NOT currently implemented)
+   - **Risk**: High - Anyone can trigger your webhook and incur AI API costs
+   - **Location**: [app/api/sms-webhook/route.ts](app/api/sms-webhook/route.ts)
+   - **Implementation**: See [TWILIO_INTEGRATION.md](TWILIO_INTEGRATION.md#security-webhook-signature-validation)
+   - **Priority**: CRITICAL - Must implement before production
+
+2. **Update Dockerfile to Use Non-Root User**
+   - **Risk**: Medium-High - Root access if container is compromised
+   - **Location**: [Dockerfile](Dockerfile)
+   - **Fix**: Follow pattern from `Dockerfile.virtual-display` (lines 56-74)
+   - **Priority**: HIGH - Should implement before production
+
+### Essential Security Practices
+
+3. **Never commit secrets** to version control
+   - All `.env.local` files are gitignored
+   - Use `.env.example` as template
+   - See [docs/SECURITY_REVIEW.md](docs/SECURITY_REVIEW.md#1-environment-variable-security-)
+
+4. **Use Secret Manager** for production credentials
+   - Google Cloud Secret Manager for Cloud Run deployments
+   - Avoid passing secrets via `--set-env-vars` in deployment scripts
+
+5. **Rotate API keys** regularly
+   - OpenAI API keys
+   - Twilio API keys
+   - Change keys every 90 days
+
+6. **Enable Cloud Armor** for DDoS protection
+   - Recommended for production deployments
+   - Protects against distributed attacks
+
+7. **Use custom domain** with SSL/TLS
+   - Cloud Run provides automatic SSL
+   - Consider custom domain for branding
+
+8. **Monitor rate limiting** (already included)
+   - Current: 10 requests/hour per phone number
+   - Adjust based on usage patterns
+   - See [app/api/sms-webhook/route.ts:74-125](app/api/sms-webhook/route.ts#L74-L125)
+
+9. **Monitor logs** for suspicious activity
+   - Review Cloud Run logs regularly
+   - Set up alerts for unusual patterns
+   - Watch for rate limit violations
+
+10. **Keep dependencies updated**
+    - Run `npm audit` regularly
+    - Fix vulnerabilities: `npm audit fix`
+    - Review security advisories
+
+### Security Checklist for Deployment
+
+Before deploying:
+
+- [ ] Twilio webhook signature validation implemented
+- [ ] Dockerfile uses non-root user
+- [ ] No secrets in committed files
+- [ ] All sensitive docs gitignored
+- [ ] Rate limiting configured
+- [ ] Input validation implemented
+- [ ] Dependencies audited (`npm audit`)
+- [ ] Cloud Run IAM policy reviewed
+- [ ] Monitoring and alerting configured
+- [ ] Security review documentation read
 
 ---
 
