@@ -1,0 +1,8 @@
+bindings:
+- members:
+  - user:YOUR_EMAIL@example.com
+  role: roles/run.invoker
+- members:
+  - allUsers
+  role: roles/run.invoker
+etag: REPLACE_WITH_ACTUAL_ETAG
