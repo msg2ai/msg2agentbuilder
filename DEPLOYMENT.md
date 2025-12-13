@@ -559,8 +559,75 @@ gcloud services enable \
   run.googleapis.com \
   cloudbuild.googleapis.com \
   containerregistry.googleapis.com \
+  artifactregistry.googleapis.com \
   secretmanager.googleapis.com
 ```
+
+### Step 2.5: Configure Required IAM Permissions
+
+**IMPORTANT**: When using Cloud Build to deploy to Cloud Run, you need to grant specific IAM permissions to the service accounts. Run these commands after creating your project:
+
+```bash
+# Set your project ID
+export PROJECT_ID=YOUR_PROJECT_ID
+export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID --format='value(projectNumber)')
+
+# Grant permissions to Cloud Build service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+  --role="roles/storage.admin"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+  --role="roles/artifactregistry.writer"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+  --role="roles/run.admin"
+
+# Grant permissions to Compute Engine default service account
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+  --role="roles/storage.admin"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+  --role="roles/artifactregistry.writer"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+  --role="roles/run.admin"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+  --role="roles/logging.logWriter"
+
+# Allow Cloud Build to act as the compute service account
+gcloud iam service-accounts add-iam-policy-binding \
+  ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+  --member="serviceAccount:${PROJECT_NUMBER}@cloudbuild.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountUser" \
+  --project=$PROJECT_ID
+
+# Allow compute service account to act as itself (required for Cloud Run deployment)
+gcloud iam service-accounts add-iam-policy-binding \
+  ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+  --role="roles/iam.serviceAccountUser" \
+  --project=$PROJECT_ID
+```
+
+**Why these permissions are needed:**
+
+| Role | Service Account | Purpose |
+|------|----------------|---------|
+| `storage.admin` | Cloud Build, Compute Engine | Upload source code and artifacts to Cloud Storage |
+| `artifactregistry.writer` | Cloud Build, Compute Engine | Push Docker images to Artifact Registry |
+| `run.admin` | Cloud Build, Compute Engine | Deploy and manage Cloud Run services |
+| `logging.logWriter` | Compute Engine | Write build and deployment logs to Cloud Logging |
+| `iam.serviceAccountUser` | Cloud Build → Compute, Compute → itself | Allow service accounts to impersonate/act as other accounts during deployment |
+
+**Note**: These are the minimum required permissions for automated Cloud Build deployment. If you encounter permission errors during deployment, check that all these roles are properly assigned.
 
 ### Step 3: Set Up Environment Variables
 
