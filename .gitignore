@@ -38,3 +38,4 @@ next-env.d.ts
 
 # local deployment docs with sensitive info
 docs/PUBLIC_ACCESS_SETUP.md
+.env.local*
